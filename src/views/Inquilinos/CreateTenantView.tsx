@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import TenantForm from "@/components/tenants/TenantForm";
 import { InquilinoFormData } from "@/types/index";
@@ -22,15 +23,25 @@ const CreateTenantView = () => {
     formState: { errors },
   } = useForm({ defaultValues: initialValues });
 
+  const { mutate } = useMutation({
+    mutationFn: createTenant,
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (data) => {
+      toast.success(data.message);
+      navigate("/");
+    },
+  });
+
   const handleForm = async (formData: InquilinoFormData) => {
-    const data = await createTenant({
+    const formattedData = {
       ...formData,
       rutInquilino: Number(formData.rutInquilino),
       telefonoInquilino: Number(formData.telefonoInquilino),
-    });
+    };
 
-    toast.success(data.message);
-    navigate("/");
+    mutate(formattedData);
   };
 
   return (

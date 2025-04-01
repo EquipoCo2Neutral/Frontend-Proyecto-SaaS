@@ -26,3 +26,17 @@ export type InquilinoFormData = Pick<
   | "sectorE"
   | "subSectorE"
 >;
+
+export const dashboardTenantsSchema = z.array(
+  inquilinosSchema.pick({
+    inquilinoId: true,
+    rutInquilino: true,
+    nombreInquilino: true,
+    direccionInquilino: true,
+    telefonoInquilino: true,
+    correoInquilino: true,
+    sectorE: true,
+    subSectorE: true,
+    estadoInquilino: true,
+  })
+);

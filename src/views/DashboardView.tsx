@@ -38,7 +38,7 @@ export default function DashboardView() {
         {data.length ? (
           <ul
             role="list"
-            className=" border border-gray-100 mt-10  shadow-lg space-y-6 w-3/4 mx-auto "
+            className=" border border-gray-100 mt-10  shadow-lg space-y-6 w-5/6 mx-auto "
           >
             {data.map((Inquilino) => (
               <li
@@ -96,6 +96,14 @@ export default function DashboardView() {
                             className="block px-3 py-1 text-sm leading-6 text-gray-900"
                           >
                             Detalle Inquilino
+                          </Link>
+                        </MenuItem>
+                        <MenuItem>
+                          <Link
+                            to={`/inquilinos/${Inquilino.inquilinoId}/edit`}
+                            className="block px-3 py-1 text-sm leading-6 text-gray-900"
+                          >
+                            Editar Inquilino
                           </Link>
                         </MenuItem>
 

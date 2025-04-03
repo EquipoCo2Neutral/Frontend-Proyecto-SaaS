@@ -52,3 +52,32 @@ export const dashboardTenantsSchema = z.array(
     estadoInquilino: true,
   })
 );
+
+
+/*
+Analizar el uso mas tarde (la ocupo para el TenantInfo ya que necesito la info de la suscripcion)
+*/
+
+export const inquilinosView = z.object({
+  inquilinoId: z.string(),
+  rutInquilino: z.number(),
+  nombreInquilino: z.string(),
+  direccionInquilino: z.string(),
+  telefonoInquilino: z.number(),
+  correoInquilino: z.string(),
+  sectorE: z.string(),
+  subSectorE: z.string(),
+  estadoInquilino: z.boolean(),
+  suscripcion: z.object({
+      id: z.number(),
+      diasActivo: z.number(),
+      estado: z.boolean()
+    }),
+});
+export type InquilinoView = z.infer<typeof inquilinosView>;
+
+
+
+
+/*
+*/

@@ -6,9 +6,37 @@ import {
   PopoverPanel,
 } from "@headlessui/react";
 import { Bars3Icon } from "@heroicons/react/20/solid";
-import { Link } from "react-router-dom";
+
+import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 export default function NavMenu() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      try {
+        const decoded: { rol: string } = jwtDecode(token);
+
+        // Redirigir según el rol
+        if (decoded.rol === "adminsaas") {
+          localStorage.removeItem("token");
+          navigate("/auth/login");
+        } else {
+          localStorage.removeItem("token");
+          navigate("/auth/login-user");
+        }
+      } catch (error) {
+        console.error("Error al decodificar el token:", error);
+        localStorage.removeItem("token");
+        navigate("/auth/login"); // En caso de error, redirigir a login general
+      }
+    } else {
+      navigate("/auth/login"); // Si no hay token, redirigir a login
+    }
+  };
   return (
     <Popover className="relative">
       <PopoverButton className="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 p-1 rounded-lg bg-orange-400">
@@ -36,7 +64,7 @@ export default function NavMenu() {
             <button
               className="block p-2 hover:text-purple-950"
               type="button"
-              onClick={() => {}}
+              onClick={handleLogout}
             >
               Cerrar Sesión
             </button>

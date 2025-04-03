@@ -1,5 +1,17 @@
 import { z } from "zod";
 
+/* Auth & Users */
+
+const authEquipoSchema = z.object({
+  nombre: z.string(),
+  apellido: z.string(),
+  correo: z.string().email(),
+  contrasena: z.string(),
+});
+
+type AuthEquipo = z.infer<typeof authEquipoSchema>;
+export type EquipoLoginForm = Pick<AuthEquipo, "correo" | "contrasena">;
+
 /* INQUILINOS  */
 
 export const inquilinosSchema = z.object({

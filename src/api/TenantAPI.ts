@@ -57,3 +57,14 @@ export async function updateTenant({ formData, inquilinoId }: tenantAPIType) {
     }
   }
 }
+
+export async function deleteTenat(id: Inquilino["inquilinoId"]) {
+  try {
+    const { data } = await api.delete(`inquilino/${id}`);
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
+    }
+  }
+}

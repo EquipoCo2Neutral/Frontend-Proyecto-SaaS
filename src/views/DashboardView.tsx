@@ -8,13 +8,26 @@ import {
 } from "@headlessui/react";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getTenants } from "@/api/TenantAPI";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteTenat, getTenants } from "@/api/TenantAPI";
+import { toast } from "react-toastify";
 
 export default function DashboardView() {
   const { data, isLoading } = useQuery({
     queryKey: ["inquilinos"],
     queryFn: getTenants,
+  });
+
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: deleteTenat,
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (data) => {
+      toast.success(data.message);
+      queryClient.invalidateQueries({ queryKey: ["inquilinos"] });
+    },
   });
 
   if (isLoading) return "Cargando...";
@@ -111,7 +124,7 @@ export default function DashboardView() {
                           <button
                             type="button"
                             className="block px-3 py-1 text-sm leading-6 text-red-500"
-                            onClick={() => {}}
+                            onClick={() => mutate(Inquilino.inquilinoId)}
                           >
                             Eliminar Inquilino
                           </button>

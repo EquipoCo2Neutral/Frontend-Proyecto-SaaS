@@ -41,3 +41,19 @@ export async function getTenantById(id: Inquilino["inquilinoId"]) {
     }
   }
 }
+
+type tenantAPIType = {
+  formData: InquilinoFormData;
+  inquilinoId: Inquilino["inquilinoId"];
+};
+
+export async function updateTenant({ formData, inquilinoId }: tenantAPIType) {
+  try {
+    const { data } = await api.patch(`inquilino/${inquilinoId}`, formData);
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
+    }
+  }
+}

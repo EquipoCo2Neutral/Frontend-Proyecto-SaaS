@@ -1,22 +1,23 @@
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getTenantById, getTenants } from "@/api/TenantAPI";
-import { error } from "console";
+import EditTenantForm from "@/components/tenants/EditTenantForm";
 
 const EditTenantView = () => {
   const params = useParams();
 
   const inquilinoId = params.inquilinoId!;
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["editTenant", inquilinoId],
     queryFn: () => getTenantById(inquilinoId),
-    retry: 1,
+    retry: false,
   });
 
-  console.log(data);
+  if (isLoading) return "Cargando...";
+  if (isError) return <Navigate to="/404" />;
 
-  return <div>EditTenantView</div>;
+  if (data) return <EditTenantForm data={data} inquilinoId={inquilinoId} />;
 };
 
 export default EditTenantView;

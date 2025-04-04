@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import {
   Menu,
   MenuButton,
@@ -7,12 +7,21 @@ import {
   Transition,
 } from "@headlessui/react";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTenat, getTenants } from "@/api/TenantAPI";
 import { toast } from "react-toastify";
+import AddTenatModal from "@/views/Inquilinos/AddTenantModal";
+import EditTenantModal from "@/views/Inquilinos/EditTenantModal";
 
 export default function DashboardView() {
+  const navigate = useNavigate();
+
+  // Estado para manejar el modal de edición
+  const [inquilinoIdSeleccionado, setInquilinoIdSeleccionado] = useState<
+    string | null
+  >(null);
+
   const { data, isLoading } = useQuery({
     queryKey: ["inquilinos"],
     queryFn: getTenants,
@@ -35,19 +44,28 @@ export default function DashboardView() {
   if (data)
     return (
       <>
-        <h1 className="text-5xl font-black">Inquilinos</h1>
-        <p className="text-2xl font-light ">
-          Espacio para el manejo y administracion de inquilinos
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-5xl font-black">Inquilinos</h1>
+            <p className="text-2xl font-light">
+              Espacio para el manejo y administración de inquilinos
+            </p>
+          </div>
+          <div>
+            <div className="relative group">
+              <button
+                className="w-12 h-12 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-600 transition-all shadow-lg hover:shadow-xl text-white text-3xl font-bold focus:outline-none focus:ring-4 focus:ring-red-300"
+                onClick={() => navigate(location.pathname + "?newTenant=true")}
+              >
+                +
+              </button>
+              <span className="absolute left-1/2 -translate-x-1/2 bottom-16 bg-gray-800 text-white text-sm px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-md">
+                Agregar inquilino
+              </span>
+            </div>
+          </div>
+        </div>
 
-        <nav className="my-5">
-          <Link
-            className="bg-green-400 hover:bg-green-500 px-10 py-3 text-white text-xl font-bold cursor-pointer transition-colors"
-            to="/inquilinos/create"
-          >
-            Nuevo Inquilino
-          </Link>
-        </nav>
         {data.length ? (
           <ul
             role="list"
@@ -119,6 +137,16 @@ export default function DashboardView() {
                             Editar Inquilino
                           </Link>
                         </MenuItem>
+                        <MenuItem>
+                          <button
+                            className="block px-3 py-1 text-sm leading-6 text-gray-900"
+                            onClick={() =>
+                              setInquilinoIdSeleccionado(Inquilino.inquilinoId)
+                            }
+                          >
+                            Editar Inquilino
+                          </button>
+                        </MenuItem>
 
                         <MenuItem>
                           <button
@@ -143,6 +171,15 @@ export default function DashboardView() {
               Agregar Inquilinos
             </Link>
           </p>
+        )}
+        <AddTenatModal />
+
+        {/* Renderizar el modal solo si hay un inquilino seleccionado */}
+        {inquilinoIdSeleccionado && (
+          <EditTenantModal
+            inquilinoId={inquilinoIdSeleccionado}
+            onClose={() => setInquilinoIdSeleccionado(null)}
+          />
         )}
       </>
     );

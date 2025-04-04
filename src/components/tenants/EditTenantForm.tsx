@@ -61,20 +61,12 @@ const EditTenantForm = ({ data, inquilinoId }: EditTenantFormProps) => {
   return (
     <>
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-5xl font-black">Editar Inquilino</h1>
-        <p className="text-2xl font-light ">Espacio para editar inquilinos</p>
-        <nav className="my-5">
-          <Link
-            className="bg-green-400 hover:bg-green-500 px-10 py-3 text-white text-xl font-bold cursor-pointer transition-colors"
-            to="/"
-          >
-            Volver a Inquilinos
-          </Link>
-        </nav>
+        <h1 className="font-black text-4xl  my-5">Editar Inquilino</h1>
+        <p className="text-xl font-bold ">Espacio para editar inquilinos</p>
 
         <form
           action=""
-          className="mt-10 bg-white shadow-lg p-10 rounded-lg"
+          className="mt-10 bg-orange-300 shadow-lg p-10 rounded-lg"
           onSubmit={handleSubmit(handleForm)}
           noValidate
         >
@@ -83,7 +75,7 @@ const EditTenantForm = ({ data, inquilinoId }: EditTenantFormProps) => {
           <input
             type="submit"
             value="Guardar Cambios"
-            className="bg-gray-600 hover:bg-gray-800 w-full text-white uppercase font-bold cursor-pointer transition-colors"
+            className="bg-orange-600 hover:bg-orange-800 w-full text-white uppercase font-bold cursor-pointer transition-colors"
           />
         </form>
       </div>

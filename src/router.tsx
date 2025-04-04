@@ -6,6 +6,7 @@ import EditTenantView from "./views/Inquilinos/EditTenantView";
 import AuthLayout from "./layouts/AuthLayout";
 import LoginView from "./views/auth/LoginView";
 import ProtectedRoute from "./components/ProtectedRoute";
+import InfoTenantView from "./views/Inquilinos/InfoTenantView";
 
 export default function Router() {
   return (
@@ -19,7 +20,13 @@ export default function Router() {
               path="/inquilinos/:inquilinoId/edit"
               element={<EditTenantView />}
             />
+            <Route
+            path="/inquilinos/:inquilinoId"
+            element={<InfoTenantView />}
+            />
+            
           </Route>
+
         </Route>
         <Route element={<AuthLayout />}>
           <Route path="/auth/login" element={<LoginView />} />

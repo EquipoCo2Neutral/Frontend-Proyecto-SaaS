@@ -12,6 +12,33 @@ const authEquipoSchema = z.object({
 type AuthEquipo = z.infer<typeof authEquipoSchema>;
 export type EquipoLoginForm = Pick<AuthEquipo, "correo" | "contrasena">;
 
+/* PLAN */
+
+export const planSchema = z.object({
+  idPlan: z.number(),
+  nombrePlan: z.string(),
+  cantidadAdministradores: z.number(),
+  cantidadGestores: z.number(),
+  cantidadPlantas: z.number(),
+  cantidadUsuarios: z.number(),
+  estadoPlan: z.boolean(),
+});
+
+export type Plan = z.infer<typeof planSchema>;
+
+/* SUSCRIPCION */
+  
+  export const suscripcionSchema = z.object({
+    id: z.number(),
+    estado: z.boolean(),
+    diasActivo: z.number(),
+    plan: planSchema,
+  });
+  
+  export type Suscripcion = z.infer<typeof suscripcionSchema>;
+
+
+
 /* INQUILINOS  */
 
 export const inquilinosSchema = z.object({
@@ -24,7 +51,7 @@ export const inquilinosSchema = z.object({
   sectorE: z.string(),
   subSectorE: z.string(),
   estadoInquilino: z.boolean(),
-  suscripcionId: z.number(),
+  suscripcion: suscripcionSchema,
 });
 
 export type Inquilino = z.infer<typeof inquilinosSchema>;

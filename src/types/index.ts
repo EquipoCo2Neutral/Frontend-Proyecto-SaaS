@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /* Auth & Users */
-
+//EQUIPO SAAS
 const authEquipoSchema = z.object({
   nombre: z.string(),
   apellido: z.string(),
@@ -9,10 +9,37 @@ const authEquipoSchema = z.object({
   contrasena: z.string(),
 });
 
-type AuthEquipo = z.infer<typeof authEquipoSchema>;
+export type AuthEquipo = z.infer<typeof authEquipoSchema>;
 export type EquipoLoginForm = Pick<AuthEquipo, "correo" | "contrasena">;
 
-/* PLAN */
+//USUARIOS DE INQUILINOS
+const authUsersSchema = z.object({
+  nombre: z.string(),
+  usuarioId: z.string(),
+  inquilinoId: z.string(),
+  correoUsuario: z.string().email(),
+  contrasenaUsuario: z.string(),
+  rolId: z.number(),
+});
+
+export type AuthUsers = z.infer<typeof authUsersSchema>;
+
+export type UsersLoginForm = Pick<
+  AuthUsers,
+  "correoUsuario" | "contrasenaUsuario"
+>;
+
+export type UsersInviteForm = Pick<
+  AuthUsers,
+  "nombre" | "correoUsuario" | "inquilinoId" | "rolId"
+>;
+
+export type UsersRegisterForm = Pick<
+  AuthUsers,
+  "correoUsuario" | "contrasenaUsuario" | "inquilinoId" | "rolId"
+>;
+
+/* Plan */
 
 export const planSchema = z.object({
   idPlan: z.number(),
@@ -27,17 +54,15 @@ export const planSchema = z.object({
 export type Plan = z.infer<typeof planSchema>;
 
 /* SUSCRIPCION */
-  
-  export const suscripcionSchema = z.object({
-    id: z.number(),
-    estado: z.boolean(),
-    diasActivo: z.number(),
-    plan: planSchema,
-  });
-  
-  export type Suscripcion = z.infer<typeof suscripcionSchema>;
 
+export const suscripcionSchema = z.object({
+  id: z.number(),
+  estado: z.boolean(),
+  diasActivo: z.number(),
+  plan: planSchema,
+});
 
+export type Suscripcion = z.infer<typeof suscripcionSchema>;
 
 /* INQUILINOS  */
 

@@ -39,3 +39,8 @@ export function isAdminSaas(): boolean {
   const user = getUserFromToken();
   return user?.rol === "adminsaas";
 }
+
+export function isAdminInquilino(): boolean {
+  const user = getUserFromToken();
+  return user?.rol === "admininquilino";
+}

@@ -26,15 +26,15 @@ export default function NavMenu() {
           navigate("/auth/login");
         } else {
           localStorage.removeItem("token");
-          navigate("/auth/login-user");
+          navigate("/auth/login-users");
         }
       } catch (error) {
         console.error("Error al decodificar el token:", error);
         localStorage.removeItem("token");
-        navigate("/auth/login"); // En caso de error, redirigir a login general
+        navigate("/auth/login-users"); // En caso de error, redirigir a login general
       }
     } else {
-      navigate("/auth/login"); // Si no hay token, redirigir a login
+      navigate("/auth/login-users"); // Si no hay token, redirigir a login
     }
   };
   return (

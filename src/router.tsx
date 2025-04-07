@@ -7,11 +7,17 @@ import AuthLayout from "./layouts/AuthLayout";
 import LoginView from "./views/auth/LoginView";
 import ProtectedRoute from "./components/ProtectedRoute";
 import InfoTenantView from "./views/Inquilinos/InfoTenantView";
+import HomeView from "./views/HomeView";
+import ProtectedRouteUsers from "./components/ProtectedRouteUsers";
+import LoginUsersView from "./views/auth/LoginUsersView";
+import RegisterUsersView from "./views/auth/RegisterUsersView";
+import ConfirmAccountUsers from "./views/auth/ConfirmAccountView";
 
 export default function Router() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* RUTAS PARA EL EQUIPO SAAS PROTEGIDAS */}
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/" element={<DashboardView />} index />
@@ -21,16 +27,26 @@ export default function Router() {
               element={<EditTenantView />}
             />
             <Route
-            path="/inquilinos/:inquilinoId"
-            element={<InfoTenantView />}
+              path="/inquilinos/:inquilinoId"
+              element={<InfoTenantView />}
             />
-            
           </Route>
-
         </Route>
+        {/* RUTAS PARA ADMINISTRADOR INQUILINO PROTEGIDAS */}
+        <Route element={<ProtectedRouteUsers />}>
+          <Route element={<AppLayout />}>
+            <Route path="/home" element={<HomeView />} index />
+          </Route>
+        </Route>
+
         <Route element={<AuthLayout />}>
           <Route path="/auth/login" element={<LoginView />} />
-          <Route path="/auth/register" element={<LoginView />} />
+          <Route path="/auth/login-users" element={<LoginUsersView />} />
+          <Route path="/auth/register-users" element={<RegisterUsersView />} />
+          <Route
+            path="/auth/confirm-account"
+            element={<ConfirmAccountUsers />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>

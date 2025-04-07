@@ -1,17 +1,17 @@
 import { useForm } from "react-hook-form";
-import { EquipoLoginForm } from "@/types/index";
+import { UsersLoginForm } from "@/types/index";
 import { useMutation } from "@tanstack/react-query";
 import ErrorMessage from "@/components/ErrorMessage";
-import { Login } from "@/api/AuthAPI";
+import { Login, LoginUsers } from "@/api/AuthAPI";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
-export default function LoginView() {
+export default function LoginUsersView() {
   const navigate = useNavigate();
-  const initialValues: EquipoLoginForm = {
-    correo: "",
-    contrasena: "",
+  const initialValues: UsersLoginForm = {
+    correoUsuario: "",
+    contrasenaUsuario: "",
   };
   const {
     register,
@@ -20,7 +20,7 @@ export default function LoginView() {
   } = useForm({ defaultValues: initialValues });
 
   const { mutate } = useMutation({
-    mutationFn: Login,
+    mutationFn: LoginUsers,
     onError: (error) => {
       toast.error(error.message);
     },
@@ -33,11 +33,11 @@ export default function LoginView() {
 
       const decoded: { rol: string } = jwtDecode(token);
 
-      if (decoded.rol === "adminsaas") {
+      if (decoded.rol === "admininquilino") {
         localStorage.setItem("token", token);
-        toast.success(data.message);
+        toast.success("inicio de sesión exitoso");
         setTimeout(() => {
-          navigate("/");
+          navigate("/home");
         }, 2000);
       } else {
         toast.error("No tienes permisos para acceder.");
@@ -46,21 +46,21 @@ export default function LoginView() {
     },
   });
 
-  const handleLogin = (formData: EquipoLoginForm) => {
+  const handleLogin = (formData: UsersLoginForm) => {
     mutate(formData);
   };
 
   return (
     <>
-      <h1 className="font-bold text-2xl text-center">
-        Inicio de Sesión Administradores
-      </h1>
       <form
         onSubmit={handleSubmit(handleLogin)}
         className="space-y-8 p-10 bg-white rounded-2xl shadow-lg shadow-gray-300"
         noValidate
       >
         <div className="flex flex-col gap-5">
+          <h1 className="font-bold text-2xl text-center">
+            Inicio de Sesión Usuarios
+          </h1>
           <label className="font-normal text-2xl">Correo</label>
 
           <input
@@ -68,7 +68,7 @@ export default function LoginView() {
             type="email"
             placeholder="Ingresa tu correo"
             className="w-full p-3  border-gray-300 border"
-            {...register("correo", {
+            {...register("correoUsuario", {
               required: "El correo es obligatorio",
               pattern: {
                 value: /\S+@\S+\.\S+/,
@@ -76,8 +76,8 @@ export default function LoginView() {
               },
             })}
           />
-          {errors.correo && (
-            <ErrorMessage>{errors.correo.message}</ErrorMessage>
+          {errors.correoUsuario && (
+            <ErrorMessage>{errors.correoUsuario.message}</ErrorMessage>
           )}
         </div>
 
@@ -88,12 +88,12 @@ export default function LoginView() {
             type="password"
             placeholder="Password de Registro"
             className="w-full p-3  border-gray-300 border"
-            {...register("contrasena", {
+            {...register("contrasenaUsuario", {
               required: "El Password es obligatorio",
             })}
           />
-          {errors.contrasena && (
-            <ErrorMessage>{errors.contrasena.message}</ErrorMessage>
+          {errors.contrasenaUsuario && (
+            <ErrorMessage>{errors.contrasenaUsuario.message}</ErrorMessage>
           )}
         </div>
 

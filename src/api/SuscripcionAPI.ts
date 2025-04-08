@@ -64,3 +64,28 @@ type UpdateSuscripcionParams = {
       throw error;
     }
   }
+
+
+  type CreateSuscripcionParams = {
+    estado: boolean;
+    diasActivo: number;
+    planId: string;
+  };
+
+  export async function createSuscripcion(data: CreateSuscripcionParams): Promise<Suscripcion> {
+    try {
+      const response = await api.post("/suscripcion", data);
+      const parsed = suscripcionSchema.safeParse(response.data);
+  
+      if (parsed.success) {
+        return parsed.data;
+      } else {
+        throw new Error("Formato de datos inválido");
+      }
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        throw new Error(error.response.data.message);
+      }
+      throw error;
+    }
+  }

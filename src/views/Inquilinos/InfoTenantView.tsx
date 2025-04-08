@@ -2,7 +2,7 @@ import TenantInfo from "@/components/tenants/TenantInfo";
 import { getTenantById} from "@/api/TenantAPI";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
-import { InquilinoView } from "@/types/index";
+import { Inquilino} from "@/types/index";
 
 export default function InfoTenantView(){
 
@@ -10,7 +10,7 @@ export default function InfoTenantView(){
 
     const inquilinoId = params.inquilinoId!;
   
-    const { data, isLoading, error } = useQuery<InquilinoView>({
+    const { data, isLoading, error } = useQuery<Inquilino>({
       queryKey: ["editTenant", inquilinoId],
       queryFn: () => getTenantById(inquilinoId),
       retry: 1,
@@ -47,7 +47,7 @@ export default function InfoTenantView(){
 
         </nav>
 
-        <TenantInfo inquilinos={data ? [data] : []} />
+        <TenantInfo inquilinos={[data]} />
 
       </div>
         

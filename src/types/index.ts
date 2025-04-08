@@ -104,3 +104,38 @@ export const dashboardTenantsSchema = z.array(
     estadoInquilino: true,
   })
 );
+
+/* Rol */
+
+export const rolSchema = z.object({
+  id: z.number(),
+  rol: z.string(),
+});
+export type Rol = z.infer<typeof rolSchema>;
+
+/* Usuarios */
+export const usuarioSchema = z.object({
+  usuarioId: z.string(),
+  correoUsuario: z.string().email(),
+  estadoUsuario: z.boolean(),
+  confirmacionUsuario: z.boolean(),
+  rol: rolSchema,
+  inquilino: inquilinosSchema,
+});
+
+export type Usuario = z.infer<typeof usuarioSchema>;
+
+
+/* Persona  */
+
+/* Persona */
+export const personaSchema = z.object({
+  rut: z.number(),
+  nombre: z.string(),
+  primerApellido: z.string(),
+  segundoApellido: z.string(),
+  telefono: z.string(),
+  usuarioId: usuarioSchema,
+});
+
+export type Persona = z.infer<typeof personaSchema>;

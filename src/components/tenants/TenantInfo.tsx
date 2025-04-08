@@ -1,197 +1,263 @@
-import { Inquilino} from "@/types/index";
-import { getPlans } from "@/api/PlanAPI"; // Ajusta el path si es diferente
+
 import { useEffect, useState } from "react";
-import { Plan } from "@/types/index"; // Ajusta el path si es diferente
-import { getSuscripcionById, updateSuscripcion } from "@/api/Suscripcion.API";
-import { Suscripcion } from "@/types/index";
 
 
-  interface Props {
-    inquilinos: Inquilino[];
+import { Inquilino, Plan, Suscripcion } from "@/types/index";
+
+
+import { getPlans } from "@/api/PlanAPI";
+import { createSuscripcion, getSuscripcionById} from "@/api/SuscripcionAPI";
+import { updateTenant } from "@/api/TenantAPI";
+
+
+import CrearSuscripcionModal from "./crearSuscripcion";
+import { useQueryClient } from "@tanstack/react-query";
+
+// Tipado de props
+interface Props {
+  inquilinos: Inquilino[];
+}
+
+
+const users = [
+  {
+    name: "Sebastian Gallegos",
+    email: "SG@Gmail.com",
+    phone: "37188277"
+  },
+  {
+    name: "Camila Rodríguez",
+    email: "camila.rodriguez@example.com",
+    phone: "98765432"
+  },
+  {
+    name: "Lucas Fernández",
+    email: "lucas.fernandez@example.com",
+    phone: "12345678"
+  },
+  {
+    name: "Lucas Peres",
+    email: "lucas.Peres@example.com",
+    phone: "12345655"
+  }
+];
+
+
+export default function TenantInfo({ inquilinos }: Props) {
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [suscripcion, setSuscripcion] = useState<Suscripcion | null>(null);
+  
+  const [suscripcionId, setSuscripcionId] = useState<number>(0);
+  const [showModal, setShowModal] = useState(false);
+  const [isLoadingModal, setIsLoadingModal] = useState(false);
+
+  const queryClient = useQueryClient(); // Inicializamos queryClient
+  
+  //useEffect para obtener planes y suscripción
+  useEffect(() => {
+    if (!inquilinos || inquilinos.length === 0) return;
+    const id = inquilinos[0]?.suscripcion?.id ?? 0;
+    setSuscripcionId(id);
+    console.log("ID de suscripción al renderizar:", id);
+
+    async function fetchPlans() {
+      try {
+        const fetchedPlans = await getPlans();
+        setPlans(fetchedPlans);
+      } catch (error) {
+        console.error("Error al obtener los planes:", error);
+      }
+    }
+
+    async function fetchSuscripcion() {
+      try {
+        const fetchedSuscripcion = await getSuscripcionById(id);
+        setSuscripcion(fetchedSuscripcion);
+        console.log("Suscripción obtenida:", fetchedSuscripcion);
+      } catch (error) {
+        console.error("Error al obtener la suscripción:", error);
+      }
+    }
+
+    fetchSuscripcion();
+    fetchPlans();
+  }, [inquilinos]);
+
+
+  //Manejar cambio estado inquilino
+  const handleChangeEstado = async (estado: boolean) => {
+    console.log("Antes del update:", inquilinos[0]);
+    console.log("Estado del inquilino:", estado);
+    try {
+      const inquilinoActual = inquilinos[0];
+      const formDataActualizado = {
+        ...inquilinoActual,
+        estadoInquilino: estado,
+        suscripcionId: suscripcion?.id,
+      };
+      await updateTenant({
+        formData: formDataActualizado,
+        inquilinoId: inquilinoActual.inquilinoId,
+      });
+      console.log("Después del update:", inquilinos[0]);
+
+      // Forzamos la recarga de datos desde el backend
+      queryClient.invalidateQueries({ queryKey: ["editTenant", inquilinoActual.inquilinoId] });
+    } catch (error) {
+      console.error("Error al cambiar el estado del inquilino:", error);
+    }
   }
 
-  const users = [
-    {
-      name: "Sebastian Gallegos",
-      email: "SG@Gmail.com",
-      phone: "37188277"
-    },
-    {
-      name: "Camila Rodríguez",
-      email: "camila.rodriguez@example.com",
-      phone: "98765432"
-    },
-    {
-      name: "Lucas Fernández",
-      email: "lucas.fernandez@example.com",
-      phone: "12345678"
-    },
-    {
-        name: "Lucas Peres",
-        email: "lucas.Peres@example.com",
-        phone: "12345655"
+
+  //Manejador de creación de suscripción
+  const handleCreateSuscripcion = async (data: { estado: boolean; diasActivo: number; planId: string }) => {
+    try {
+      setIsLoadingModal(true);
+  
+      const nuevaSuscripcion = await createSuscripcion(data);
+      const inquilinoActual = inquilinos[0];
+  
+      const formDataActualizado = {
+        ...inquilinoActual,
+        suscripcionId: nuevaSuscripcion.id,
+      };
+  
+      await updateTenant({
+        formData: formDataActualizado,
+        inquilinoId: inquilinoActual.inquilinoId,
+      });
+      
+
+      // Actualizar estados y re-render
+      setSuscripcionId(nuevaSuscripcion.id);
+  
+      const fetched = await getSuscripcionById(nuevaSuscripcion.id);
+      setSuscripcion(fetched);
+  
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error al crear o asignar la suscripción:", error);
+    } finally {
+      setIsLoadingModal(false);
     }
-  ];
-  
-  export default function TenantInfo({ inquilinos }: Props) {
-    const [plans, setPlans] = useState<Plan[]>([]);
-    const [suscripcion, setSuscripcion] = useState<Suscripcion | null>(null);
-    const [selectedPlan, setSelectedPlan] = useState<string>("");
-    const [suscripcionId, setSuscripcionId] = useState<number>(0);
-  
-    useEffect(() => {
-      const id = inquilinos[0].suscripcion.id;
-      setSuscripcionId(id);
-      async function fetchPlans() {
-        try {
-          const fetchedPlans = await getPlans();
-          setPlans(fetchedPlans);
-        } catch (error) {
-          console.error("Error al obtener los planes:", error);
-        }
-      }
-      async function fetchSuscripcion() {
-        try {
-          const fetchedSuscripcion = await getSuscripcionById(id);
-          setSuscripcion(fetchedSuscripcion);
-          console.log("Suscripción obtenida:", fetchedSuscripcion);
-          if (fetchedSuscripcion) {
-            setSelectedPlan(fetchedSuscripcion.plan.idPlan.toString());
-          }
-        } catch (error) {
-          console.error("Error al obtener la suscripción:", error);
-        }
-      }
-    
-      fetchSuscripcion();
-      fetchPlans();
-    }, [inquilinos]);
-
-    const handlePlanChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-      const newPlanId = parseInt(event.target.value);
-      setSelectedPlan(event.target.value);
-  
-      try {
-        await updateSuscripcion({ suscripcionId, planId: newPlanId });
-        console.log("Suscripción actualizada con éxito");
-      } catch (error) {
-        console.error("Error al actualizar la suscripción:", error);
-      }
-    };
+  };
 
 
-    return (
-      <div className="space-y-8">
-        {inquilinos.map((inquilino) => (
-          <div
-            key={inquilino.inquilinoId}
-            className="bg-white shadow-lg rounded-2xl p-6 flex flex-col space-y-6 border border-gray-200"
-          >
-            {/* Header Section */}
-            <div className="flex justify-between items-center">
-              <h2 className="text-3xl font-semibold text-gray-800">{inquilino.nombreInquilino}</h2>
-              <span
-                className={`px-4 py-2 text-sm font-bold rounded-lg ${
-                  inquilino.estadoInquilino ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'
-                }`}
-              >
-                {inquilino.estadoInquilino ? 'Activo' : 'Inactivo'}
-              </span>
+  return (
+    <div className="space-y-8">
+      {inquilinos.map((inquilino) => (
+        <div
+          key={inquilino.inquilinoId}
+          className="bg-white shadow-lg rounded-2xl p-6 flex flex-col space-y-6 border border-gray-200"
+        >
+          {/* Header */}
+          <div className="flex justify-between items-center">
+            <h2 className="text-3xl font-semibold text-gray-800">{inquilino.nombreInquilino}</h2>
+            <button
+              onClick={() => handleChangeEstado(!inquilino.estadoInquilino)}
+              className={`px-4 py-2 text-sm font-bold rounded-lg focus:outline-none ${
+                inquilino.estadoInquilino
+                  ? 'bg-green-200 text-green-800'
+                  : 'bg-red-200 text-red-800'
+              }`}
+            >
+              {inquilino.estadoInquilino ? 'Activo' : 'Inactivo'}
+            </button>
+          </div>
+
+          {/* Info general */}
+          <div className="grid grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <p className="text-gray-700"><span className="font-semibold">RUT:</span> {inquilino.rutInquilino}</p>
+              <p className="text-gray-700"><span className="font-semibold">Teléfono:</span> {inquilino.telefonoInquilino}</p>
+              <p className="text-gray-700"><span className="font-semibold">Correo:</span> {inquilino.correoInquilino}</p>
             </div>
-  
-            {/* Sección de Información General */}
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <p className="text-gray-700">
-                  <span className="font-semibold">RUT:</span> {inquilino.rutInquilino}
-                </p>
-                <p className="text-gray-700">
-                  <span className="font-semibold">Teléfono:</span> {inquilino.telefonoInquilino}
-                </p>
-                <p className="text-gray-700">
-                  <span className="font-semibold">Correo:</span> {inquilino.correoInquilino}
-                </p>
-              </div>
-              <div className="space-y-2">
-                <p className="text-gray-700">
-                  <span className="font-semibold">Dirección:</span> {inquilino.direccionInquilino}
-                </p>
-                <p className="text-gray-700">
-                  <span className="font-semibold">Sector:</span> {inquilino.sectorE}
-                </p>
-                <p className="text-gray-700">
-                  <span className="font-semibold">Subsector:</span> {inquilino.subSectorE}
-                </p>
-              </div>
-            </div>
-  
-            {/* Sección de Suscripcion */}
-            <div className="bg-gray-50 p-4 rounded-lg">
-
-              <h3 className="text-lg font-semibold text-gray-800">Suscripción</h3>
-              <div className="grid grid-cols-2 gap-6" >
-                <div className="space-y-2">
-                    <p className="text-gray-700">
-                        <span
-                            className={`px-2 py-1 text-sm font-bold rounded-lg ${
-                            inquilino.suscripcion.estado ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'
-                            }`}
-                        >
-                            {inquilino.suscripcion.estado ? 'Activo' : 'Inactivo'}
-                        </span>
-                    </p>
-                    <p>
-                        <span className="font-semibold ">Dias Activo:</span> {inquilino.suscripcion.diasActivo}
-                    </p>                    
-                </div>
-                <div className="space-y-2">
-                  <select
-                    className="w-full p-2 border border-gray-300 rounded-lg shadow-sm text-gray-700 font-semibold bg-white"
-                    name="plan"
-                    id="plan"
-                    value={selectedPlan}
-                    onChange={handlePlanChange}
-                  >
-                    {plans.map((plan) => (
-                      <option key={plan.idPlan} value={plan.idPlan}>
-                        {plan.nombrePlan}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-            </div>
-
-            </div>
-
-
-
-            <div className="">
-                <div className="flex justify-between items-center">
-                   <h3 className="text-lg font-semibold text-gray-800">Administradores de la Empresa</h3> 
-                   <button>+</button>
-                </div>
-
-                <div className="flex space-x-4 overflow-x-auto p-4">
-                    {users.map((user,index)=> (
-                        <div key={index} className="relative w-64 bg-white shadow-lg rounded-2xl p-4 border border-gray-200 flex-shrink-0">
-                    {/* Icono con la inicial */}
-                            <div className="absolute top-2 left-2 w-10 h-10 bg-blue-500 text-white flex items-center justify-center font-bold text-lg rounded-full">
-                                {user.name.charAt(0).toUpperCase()}
-                            </div>
-
-                            {/* Contenido */}
-                            <div className="mt-8 space-y-2">
-                                <p className="text-gray-700 font-semibold">{user.name}</p>
-                                <p className="text-gray-500">{user.email}</p>
-                                <p className="text-gray-400 text-sm">{user.phone}</p>
-                            </div>
-                        </div>
-                    ))}                    
-                </div>
+            <div className="space-y-2">
+              <p className="text-gray-700"><span className="font-semibold">Dirección:</span> {inquilino.direccionInquilino}</p>
+              <p className="text-gray-700"><span className="font-semibold">Sector:</span> {inquilino.sectorE}</p>
+              <p className="text-gray-700"><span className="font-semibold">Subsector:</span> {inquilino.subSectorE}</p>
             </div>
           </div>
-        ))}
-      </div>
-    );
-  }
+
+          {/* Suscripción nueva */}
+          {suscripcionId === 1 && (
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <button
+                onClick={() => setShowModal(true)}
+                className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-gray-800 font-medium py-3 px-6 border border-gray-300 rounded-xl shadow-sm transition duration-200 ease-in-out"
+              >
+                <span>Crear y asignar una suscripción a este inquilino</span>
+              </button>
+            </div>
+          )}
+
+          {/* Suscripción existente */}
+          {suscripcionId !== 1 && (
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="text-lg font-semibold text-gray-800">Suscripción</h3>
+              <div className="grid grid-cols-2 gap-6">
+                {/* Estado y Días Activo */}
+                <div className="space-y-2">
+                  <p className="text-gray-700">
+                    <span
+                      className={`px-2 py-1 text-sm font-bold rounded-lg ${
+                        inquilinos[0].suscripcion.estado
+                          ? 'bg-green-200 text-green-800'
+                          : 'bg-red-200 text-red-800'
+                      }`}
+                    >
+                      {inquilinos[0].suscripcion.estado ? 'Activo' : 'Inactivo'}
+                    </span>
+                  </p>
+                  <p className="text-gray-700">
+                    <span className="font-semibold">Días Activo:</span>{' '}
+                    {inquilinos[0].suscripcion.diasActivo}
+                  </p>
+                </div>
+
+                {/* Nombre del Plan */}
+                <div className="space-y-1">
+                  <p className="text-sm text-gray-500">Su plan actual</p>
+                  <p className="text-gray-800 text-lg font-semibold">
+                    {suscripcion?.plan.nombrePlan}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal */}
+          <CrearSuscripcionModal
+            isOpen={showModal}
+            onClose={() => setShowModal(false)}
+            plans={plans}
+            onSubmit={handleCreateSuscripcion}
+            isLoading={isLoadingModal}
+          />
+
+          {/* Administradores */}
+          <div className="">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-gray-800">Administradores de la Empresa</h3>
+              <button>+</button>
+            </div>
+            <div className="flex space-x-4 overflow-x-auto p-4">
+              {users.map((user, index) => (
+                <div key={index} className="relative w-64 bg-white shadow-lg rounded-2xl p-4 border border-gray-200 flex-shrink-0">
+                  <div className="absolute top-2 left-2 w-10 h-10 bg-blue-500 text-white flex items-center justify-center font-bold text-lg rounded-full">
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="mt-8 space-y-2">
+                    <p className="text-gray-700 font-semibold">{user.name}</p>
+                    <p className="text-gray-500">{user.email}</p>
+                    <p className="text-gray-400 text-sm">{user.phone}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}

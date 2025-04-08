@@ -1,6 +1,7 @@
-import axios from 'axios';
+
 import { z } from 'zod';
-import { usuarioSchema } from '@/types/index'; // Ajusta la ruta según tu estructura real
+import { usuarioSchema } from '@/types/index'; 
+import api from '@/lib/axios';
 
 // Validamos toda la respuesta del backend
 const obtenerUsuariosResponseSchema = z.object({
@@ -8,9 +9,19 @@ const obtenerUsuariosResponseSchema = z.object({
   total: z.number(),
 });
 
-export const getUsuarios = async () => {
+
+// Tipado de los filtros opcionales
+interface GetUsuariosParams {
+  rolId?: number;
+  inquilinoId?: string;
+}
+
+export const getUsuarios = async (params?: GetUsuariosParams) => {
   try {
-    const response = await axios.get('/api/usuarios'); // Cambia la URL si es distinta
+    const response = await api.get('/usuario', {
+      params, // Esto genera ?rolId=...&inquilinoId=... automáticamente
+    });
+
     const parsed = obtenerUsuariosResponseSchema.safeParse(response.data);
 
     if (!parsed.success) {

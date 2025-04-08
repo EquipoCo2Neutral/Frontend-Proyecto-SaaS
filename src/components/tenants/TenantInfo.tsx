@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 
 
-import { Inquilino, Plan, Suscripcion } from "@/types/index";
+import { Inquilino, Persona, Plan, Suscripcion, Usuario } from "@/types/index";
 
 
 import { getPlans } from "@/api/PlanAPI";
@@ -12,6 +12,9 @@ import { updateTenant } from "@/api/TenantAPI";
 
 import CrearSuscripcionModal from "./crearSuscripcion";
 import { useQueryClient } from "@tanstack/react-query";
+import { getUsuarios } from "@/api/UsuariosAPI";
+
+import { getPersonasPorUsuarios } from "@/api/PersonasAPI";
 
 // Tipado de props
 interface Props {
@@ -19,34 +22,13 @@ interface Props {
 }
 
 
-const users = [
-  {
-    name: "Sebastian Gallegos",
-    email: "SG@Gmail.com",
-    phone: "37188277"
-  },
-  {
-    name: "Camila Rodríguez",
-    email: "camila.rodriguez@example.com",
-    phone: "98765432"
-  },
-  {
-    name: "Lucas Fernández",
-    email: "lucas.fernandez@example.com",
-    phone: "12345678"
-  },
-  {
-    name: "Lucas Peres",
-    email: "lucas.Peres@example.com",
-    phone: "12345655"
-  }
-];
-
-
 export default function TenantInfo({ inquilinos }: Props) {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [suscripcion, setSuscripcion] = useState<Suscripcion | null>(null);
-  
+
+  const [usuarios, setUsuarios] = useState<Usuario[]>([]); 
+  const [personas, setPersonas] = useState<Persona[]>([]);
+
   const [suscripcionId, setSuscripcionId] = useState<number>(0);
   const [showModal, setShowModal] = useState(false);
   const [isLoadingModal, setIsLoadingModal] = useState(false);
@@ -79,8 +61,30 @@ export default function TenantInfo({ inquilinos }: Props) {
       }
     }
 
+    async function fetchUsuario() {
+      try {
+        const { usuarios } = await getUsuarios({
+          rolId: 2,
+          inquilinoId: inquilinos[0].inquilinoId,
+        });
+        setUsuarios(usuarios);
+        console.log("Usuarios obtenidos:", usuarios);
+        const usuarioIds = usuarios.map((u) => u.usuarioId);
+        console.log("IDs de usuarios:", usuarioIds);
+        if (usuarioIds.length === 0) return;
+        const dataPersonas = await getPersonasPorUsuarios(usuarioIds);
+        setPersonas(dataPersonas);
+        console.log("Personas obtenidas:", dataPersonas);
+      } catch (error) {
+        console.error("Error al obtener los usuarios:", error);
+      }
+
+      
+    }
+    fetchUsuario();
     fetchSuscripcion();
     fetchPlans();
+    console.log("Personas",personas)
   }, [inquilinos]);
 
 
@@ -142,6 +146,15 @@ export default function TenantInfo({ inquilinos }: Props) {
     }
   };
 
+  //Manejador de Envio de correo
+  const handleSendEmail = async () => {
+    try {
+      // Aquí se debe implementar la lógica para enviar el correo
+      console.log("Enviando correo...");
+    } catch (error) {
+      console.error("Error al enviar el correo:", error);
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -239,18 +252,21 @@ export default function TenantInfo({ inquilinos }: Props) {
           <div className="">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold text-gray-800">Administradores de la Empresa</h3>
-              <button>+</button>
+              <button className="bg-gray-900 text-gray-100 text-xl w-10 h-10 rounded-full hover:bg-gray-700 transition duration-200"
+              onClick={handleSendEmail}
+              >+</button>
             </div>
             <div className="flex space-x-4 overflow-x-auto p-4">
-              {users.map((user, index) => (
+              {personas.map((persona, index) => (
                 <div key={index} className="relative w-64 bg-white shadow-lg rounded-2xl p-4 border border-gray-200 flex-shrink-0">
-                  <div className="absolute top-2 left-2 w-10 h-10 bg-blue-500 text-white flex items-center justify-center font-bold text-lg rounded-full">
-                    {user.name.charAt(0).toUpperCase()}
+                  <div className="absolute top-2 left-2 w-10 h-10 bg-gray-100 text-gray-90 flex items-center justify-center font-bold text-lg rounded-full">
+                    {persona.nombre.charAt(0).toUpperCase()}
                   </div>
                   <div className="mt-8 space-y-2">
-                    <p className="text-gray-700 font-semibold">{user.name}</p>
-                    <p className="text-gray-500">{user.email}</p>
-                    <p className="text-gray-400 text-sm">{user.phone}</p>
+                    <p className="text-gray-700 font-semibold">{persona.nombre} {persona.primerApellido}</p>
+                    
+                    <p className="text-gray-400 text-sm">Telefono: {persona.telefono}</p>
+                    <p className="text-gray-400 text-sm">Correo contacto: {persona.usuario.correoUsuario}</p>
                   </div>
                 </div>
               ))}

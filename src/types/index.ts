@@ -119,8 +119,8 @@ export const usuarioSchema = z.object({
   correoUsuario: z.string().email(),
   estadoUsuario: z.boolean(),
   confirmacionUsuario: z.boolean(),
-  rol: rolSchema,
-  inquilino: inquilinosSchema,
+  rol: rolSchema.optional(),
+  inquilino: inquilinosSchema.optional(),
 });
 
 export type Usuario = z.infer<typeof usuarioSchema>;
@@ -134,8 +134,8 @@ export const personaSchema = z.object({
   nombre: z.string(),
   primerApellido: z.string(),
   segundoApellido: z.string(),
-  telefono: z.string(),
-  usuarioId: usuarioSchema,
+  telefono: z.number(),
+  usuario: usuarioSchema,
 });
 
 export type Persona = z.infer<typeof personaSchema>;

@@ -1,8 +1,8 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { isAdminInquilino } from "@/utils/auth";
+import { isAdminInquilino, isGestor } from "@/utils/auth";
 
 const ProtectedRouteUsers = () => {
-  return isAdminInquilino() ? (
+  return isAdminInquilino() || isGestor() ? (
     <Outlet />
   ) : (
     <Navigate to="/auth/login-users" replace />

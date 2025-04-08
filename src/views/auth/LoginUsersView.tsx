@@ -33,7 +33,10 @@ export default function LoginUsersView() {
 
       const decoded: { rol: string } = jwtDecode(token);
 
-      if (decoded.rol === "admininquilino") {
+      if (
+        decoded.rol === "admininquilino" ||
+        decoded.rol === "gestorenergético"
+      ) {
         localStorage.setItem("token", token);
         toast.success("inicio de sesión exitoso");
         setTimeout(() => {

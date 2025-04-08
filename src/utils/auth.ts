@@ -44,3 +44,8 @@ export function isAdminInquilino(): boolean {
   const user = getUserFromToken();
   return user?.rol === "admininquilino";
 }
+
+export function isGestor(): boolean {
+  const user = getUserFromToken();
+  return user?.rol === "gestorenergético";
+}

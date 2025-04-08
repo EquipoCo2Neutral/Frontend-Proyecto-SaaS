@@ -38,10 +38,7 @@ export type UsersRegisterForm = Pick<
   AuthUsers,
   "correoUsuario" | "contrasenaUsuario" | "inquilinoId" | "rolId"
 >;
-export type RequestConfirmationCodeForm = Pick<
-  AuthUsers,
-  "correoUsuario" | "contrasenaUsuario" | "inquilinoId" | "rolId"
->;
+export type RequestConfirmationCodeForm = Pick<AuthUsers, "correoUsuario">;
 
 /* Plan */
 

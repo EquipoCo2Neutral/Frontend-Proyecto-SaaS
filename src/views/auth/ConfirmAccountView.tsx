@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PinInput, PinInputField } from "@chakra-ui/pin-input";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
@@ -6,6 +6,7 @@ import { ConfirmAccount } from "@/api/AuthAPI";
 import { toast } from "react-toastify";
 
 export default function ConfirmAccountView() {
+  const navigate = useNavigate();
   const [token, setToken] = useState("");
 
   const { mutate } = useMutation({
@@ -15,6 +16,10 @@ export default function ConfirmAccountView() {
     },
     onSuccess: async (data) => {
       toast.success(data);
+      // Redirigir a la página de login tras dos segundos con navigate
+      setTimeout(() => {
+        navigate("/auth/login-users");
+      }, 2000);
     },
   });
 
@@ -53,7 +58,7 @@ export default function ConfirmAccountView() {
 
       <nav className="mt-10 flex flex-col space-y-4">
         <Link
-          to="/auth/new-code"
+          to="/auth/request-code"
           className="text-center text-gray-800 font-normal"
         >
           Solicitar un nuevo Código

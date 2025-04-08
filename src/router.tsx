@@ -12,6 +12,7 @@ import ProtectedRouteUsers from "./components/ProtectedRouteUsers";
 import LoginUsersView from "./views/auth/LoginUsersView";
 import RegisterUsersView from "./views/auth/RegisterUsersView";
 import ConfirmAccountUsers from "./views/auth/ConfirmAccountView";
+import RequestNewCodeView from "./views/auth/RequestNewCodeView";
 
 export default function Router() {
   return (
@@ -47,6 +48,7 @@ export default function Router() {
             path="/auth/confirm-account"
             element={<ConfirmAccountUsers />}
           />
+          <Route path="/auth/request-code" element={<RequestNewCodeView />} />
         </Route>
       </Routes>
     </BrowserRouter>

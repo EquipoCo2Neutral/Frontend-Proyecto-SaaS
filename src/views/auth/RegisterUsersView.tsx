@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { UsersRegisterForm } from "@/types/index";
 import ErrorMessage from "@/components/ErrorMessage";
 
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { ValidateInvitation } from "@/api/AuthAPI";
 import { createManager } from "@/api/ManagerAPI";
@@ -80,7 +80,9 @@ export default function RegisterUsersView() {
 
   return (
     <>
-      <h1 className="text-5xl font-black text-black">Has sido invitado</h1>
+      <h1 className="text-5xl font-black text-black text-center">
+        Has sido invitado
+      </h1>
       <p className="text-2xl font-light text-black mt-5">
         Llena el formulario para{" "}
         <span className="text-orange-500 font-bold">crear tu cuenta</span>

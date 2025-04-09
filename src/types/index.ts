@@ -20,6 +20,7 @@ const authUsersSchema = z.object({
   correoUsuario: z.string().email(),
   contrasenaUsuario: z.string(),
   rolId: z.number(),
+  token: z.string(),
 });
 
 export type AuthUsers = z.infer<typeof authUsersSchema>;
@@ -39,6 +40,9 @@ export type UsersRegisterForm = Pick<
   "correoUsuario" | "contrasenaUsuario" | "inquilinoId" | "rolId"
 >;
 export type RequestConfirmationCodeForm = Pick<AuthUsers, "correoUsuario">;
+export type ForgotPasswordForm = Pick<AuthUsers, "correoUsuario">;
+export type NewPasswordForm = Pick<AuthUsers, "contrasenaUsuario">;
+export type ConfirmToken = Pick<AuthUsers, "token">;
 
 /* Plan */
 

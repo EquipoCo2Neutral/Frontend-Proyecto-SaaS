@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import ErrorMessage from "@/components/ErrorMessage";
 import { Login, LoginUsers } from "@/api/AuthAPI";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 export default function LoginUsersView() {
@@ -55,15 +55,17 @@ export default function LoginUsersView() {
 
   return (
     <>
+      <h1 className="text-5xl font-black text-black text-center">Login</h1>
+      <p className="text-2xl font-light text-black mt-5 text-center mb-4">
+        Llena el formulario para{" "}
+        <span className="text-orange-500 font-bold">Iniciar sesión</span>
+      </p>
       <form
         onSubmit={handleSubmit(handleLogin)}
         className="space-y-8 p-10 bg-white rounded-2xl shadow-lg shadow-gray-300"
         noValidate
       >
         <div className="flex flex-col gap-5">
-          <h1 className="font-bold text-2xl text-center">
-            Inicio de Sesión Usuarios
-          </h1>
           <label className="font-normal text-2xl">Correo</label>
 
           <input
@@ -106,6 +108,14 @@ export default function LoginUsersView() {
           className="bg-green-600 hover:bg-green-700 w-full p-3  text-white font-black  text-xl cursor-pointer "
         />
       </form>
+      <nav className="mt-10 flex flex-col space-y-4">
+        <Link
+          className="text-center text-gray-500 hover:text-green-600"
+          to="/auth/forgot-password"
+        >
+          ¿Olvidaste tu contraseña? Recupera tu cuenta
+        </Link>
+      </nav>
     </>
   );
 }

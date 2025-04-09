@@ -63,7 +63,7 @@ import { getSuscripcionById } from "@/api/SuscripcionAPI";
         <div className="p-4">
             
           <h2 className="text-xl font-semibold text-center">Administración de Gestores</h2>
-          <p className="text-center text-sm text-orange-500 mt-1">Límite según plan {suscripcion?.plan.cantidadGestores }</p>
+          <p className="text-center text-sm text-orange-500 mt-1">Límite según plan:  {suscripcion?.plan.cantidadGestores }</p>
   
           <h3 className="mt-6 mb-2 text-md font-medium">Listado de gestores:</h3>
   
@@ -82,11 +82,14 @@ import { getSuscripcionById } from "@/api/SuscripcionAPI";
             ))}
   
             {/* Botón para agregar nuevo gestor */}
-            <button className="w-40 h-32 rounded-xl border-2 border-dashed flex items-center justify-center text-red-500 hover:bg-red-50 transition"
-            onClick={() => navigate(location.pathname + "?inviteManager=true")}
-            >
-              <span className="text-3xl font-bold">+</span>
-            </button>
+              {personas.length < (suscripcion?.plan.cantidadGestores ?? 0) && (
+                <button
+                  className="w-40 h-32 rounded-xl border-2 border-dashed flex items-center justify-center text-red-500 hover:bg-red-50 transition"
+                  onClick={() => navigate(location.pathname + "?inviteManager=true")}
+                >
+                  <span className="text-3xl font-bold">+</span>
+                </button>
+              )}
             <InviteManagerModal />
           </div>
         </div>

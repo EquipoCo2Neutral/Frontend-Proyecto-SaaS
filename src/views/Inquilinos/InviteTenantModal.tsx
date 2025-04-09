@@ -10,8 +10,9 @@ import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { UsersInviteForm } from "@/types/index";
-import InviteManagerView from "./InviteManagerView";
-export default function InviteManagerModal() {
+
+import InviteTenatView from "./InviteTenantView";
+export default function InviteTenantModal() {
   const initialValues: UsersInviteForm = {
     nombre: "",
     inquilinoId: "",
@@ -19,16 +20,14 @@ export default function InviteManagerModal() {
     rolId: 0,
   };
   const {
-    register,
-    handleSubmit,
     formState: { errors },
   } = useForm({ defaultValues: initialValues });
   const navigate = useNavigate();
   const location = useLocation();
   const queryparams = new URLSearchParams(location.search);
 
-  const managerTask = queryparams.get("inviteManager");
-  const show = managerTask ? true : false;
+  const tenatTask = queryparams.get("inviteTenant");
+  const show = tenatTask ? true : false;
   return (
     <>
       <Transition appear show={show} as={Fragment}>
@@ -62,14 +61,14 @@ export default function InviteManagerModal() {
               >
                 <DialogPanel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all p-16">
                   <DialogTitle as="h3" className="font-black text-4xl  my-5">
-                    Invitar Gestor
+                    Invitar Administrador
                   </DialogTitle>
 
                   <p className="text-xl font-bold">
                     Llena el formulario e invita {""}
-                    <span className="text-orange-600">al gestor</span>
+                    <span className="text-orange-600">al Administrador</span>
                   </p>
-                  <InviteManagerView />
+                  <InviteTenatView />
                 </DialogPanel>
               </TransitionChild>
             </div>

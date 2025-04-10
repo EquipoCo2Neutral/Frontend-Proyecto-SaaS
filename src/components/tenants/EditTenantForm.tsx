@@ -9,9 +9,10 @@ import { toast } from "react-toastify";
 type EditTenantFormProps = {
   data: InquilinoFormData;
   inquilinoId: Inquilino["inquilinoId"];
+  onSuccess?: () => void; 
 };
 
-const EditTenantForm = ({ data, inquilinoId }: EditTenantFormProps) => {
+const EditTenantForm = ({ data, inquilinoId, onSuccess }: EditTenantFormProps) => {
   const navigate = useNavigate();
 
   const {
@@ -27,6 +28,7 @@ const EditTenantForm = ({ data, inquilinoId }: EditTenantFormProps) => {
       correoInquilino: data.correoInquilino,
       sectorE: data.sectorE,
       subSectorE: data.subSectorE,
+      estadoInquilino: data.estadoInquilino,
     },
   });
 
@@ -41,7 +43,8 @@ const EditTenantForm = ({ data, inquilinoId }: EditTenantFormProps) => {
       queryClient.invalidateQueries({ queryKey: ["inquilinos"] });
       queryClient.invalidateQueries({ queryKey: ["editTenant", inquilinoId] });
       toast.success(data.message);
-      navigate("/");
+      if (onSuccess) onSuccess(); // <-- aquí se cierra el modal
+      else navigate("/"); // fallback si no se usa desde modal
     },
   });
 
@@ -50,6 +53,7 @@ const EditTenantForm = ({ data, inquilinoId }: EditTenantFormProps) => {
       ...formData,
       rutInquilino: Number(formData.rutInquilino),
       telefonoInquilino: Number(formData.telefonoInquilino),
+      estadoInquilino: formData.estadoInquilino,
     };
 
     const data = {

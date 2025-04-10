@@ -94,6 +94,7 @@ export type InquilinoFormData = Pick<
   | "correoInquilino"
   | "sectorE"
   | "subSectorE"
+  | "estadoInquilino"
 >;
 
 export const dashboardTenantsSchema = z.array(

@@ -130,14 +130,6 @@ export default function DashboardView() {
                           </Link>
                         </MenuItem>
                         <MenuItem>
-                          <Link
-                            to={`/inquilinos/${Inquilino.inquilinoId}/edit`}
-                            className="block px-3 py-1 text-sm leading-6 text-gray-900"
-                          >
-                            Editar Inquilino
-                          </Link>
-                        </MenuItem>
-                        <MenuItem>
                           <button
                             className="block px-3 py-1 text-sm leading-6 text-gray-900"
                             onClick={() =>

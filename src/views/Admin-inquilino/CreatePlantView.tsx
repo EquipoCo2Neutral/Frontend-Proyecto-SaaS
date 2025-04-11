@@ -26,6 +26,7 @@ const CreatePlantView = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({ defaultValues: initialValues });
 
@@ -37,6 +38,8 @@ const CreatePlantView = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["plantas"] });
       toast.success(data.message);
+      reset();
+      navigate("/plants");
     },
   });
 
@@ -59,7 +62,7 @@ const CreatePlantView = () => {
       ...formData,
       estado: true,
       inquilinoId: inquilinoIdToken,
-      comunaId: Number(1),
+      comunaId: Number(formData.comunaId),
     };
 
     mutate(formattedData);

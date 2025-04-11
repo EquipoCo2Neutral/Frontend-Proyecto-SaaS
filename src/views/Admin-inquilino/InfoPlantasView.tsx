@@ -5,7 +5,17 @@ import { Link } from "react-router-dom";
 import { getPlantsByTenant } from "@/api/PlantasAPI";
 
 import AddPlantModal from "./AddPlantModal";
+import { useEffect, useState } from "react";
+import { getTenantById } from "@/api/TenantAPI";
+import { getSuscripcionById } from "@/api/SuscripcionAPI";
+import { Inquilino, Suscripcion } from "@/types/index";
+import { jwtDecode } from "jwt-decode";
+
 export default function PlantasView() {
+  const [inquilinoIdToken, setInquilinoIdToken] = useState<string>("");
+  const [inquilino, setInquilino] = useState<Inquilino | null >(null);
+  const [suscripcion, setSuscripcion] = useState<Suscripcion | null>(null);
+  const [suscripcionId, setSuscripcionId] = useState<number>(0);
   const navigate = useNavigate();
 
   const { data, isLoading } = useQuery({
@@ -13,19 +23,59 @@ export default function PlantasView() {
     queryFn: getPlantsByTenant,
   });
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("Token no encontrado");
+        return;
+      }
+      const decodedToken: any = jwtDecode(token);
+      setInquilinoIdToken(decodedToken.inquilinoId);
+    async function fetchInquilino(){
+          try {
+            if (inquilinoIdToken){
+              const fetchedInquilino = await getTenantById(inquilinoIdToken);
+              setInquilino(fetchedInquilino);
+              setSuscripcionId(fetchedInquilino.suscripcion.id);
+              console.log("Inquilino obtenido:", fetchedInquilino);
+            };
+          }catch (error) {
+            console.error("Error al obtener el inquilino:", error);
+          }
+        }  
+    async function fetchSuscripcion() {
+        try {
+            const fetchedSuscripcion = await getSuscripcionById(suscripcionId);
+            setSuscripcion(fetchedSuscripcion);
+            console.log("Suscripción obtenida:", fetchedSuscripcion);
+          } catch (error) {
+            console.error("Error al obtener la suscripción:", error);
+          }
+        }
+    if(inquilinoIdToken){
+      fetchInquilino();
+      
+    }
+    if(inquilino){
+      fetchSuscripcion();
+    }
+    
+  },[inquilinoIdToken, suscripcionId]);
+
+
   if (isLoading) {
     return <p className="text-center py-10">Cargando plantas...</p>;
   }
-
   return (
     <>
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-4xl font-black text-gray-800">Listado Plantas</h1>
           <p className="text-orange-500 font-medium text-sm mt-1">
-            Límite según plan
+            Límite según plan: {suscripcion?.plan.cantidadPlantas}
           </p>
         </div>
+        {Array.isArray(data) && data.length < (suscripcion?.plan.cantidadPlantas ?? 0) && (
         <div className="relative group">
           <button
             className="w-12 h-12 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-600 transition-all shadow-lg text-white text-3xl font-bold"
@@ -37,6 +87,8 @@ export default function PlantasView() {
             Agregar planta
           </span>
         </div>
+        )}
+
       </div>
 
       {data?.length ? (

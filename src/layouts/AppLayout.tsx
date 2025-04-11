@@ -6,7 +6,7 @@ import NavMenu from "@/components/NavMenu";
 
 const AppLayout = () => {
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <header className="bg-white">
         <div className="max-w-screen-3xl mx-auto px-4 flex flex-row justify-between items-center">
           <div className="w-20">
@@ -16,17 +16,17 @@ const AppLayout = () => {
         </div>
       </header>
 
-      <section className="max-w-screen-3xl mx-auto  p-5 bg-gray-100">
+      <section className="flex-grow max-w-screen-3xl mx-auto p-5 w-full bg-gray-100">
         <Outlet />
       </section>
 
-      <footer className="py-5">
+      <footer className="py-5 bg-white">
         <p className="text-center">
           Todos los derechos reservados {new Date().getFullYear()}
         </p>
       </footer>
       <ToastContainer pauseOnHover={false} pauseOnFocusLoss={false} />
-    </>
+    </div>
   );
 };
 

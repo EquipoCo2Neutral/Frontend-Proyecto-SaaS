@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { getUsuarios } from "@/api/UsuariosAPI";
 import { getPersonasPorUsuarios } from "@/api/PersonasAPI";
 import { getSuscripcionById } from "@/api/SuscripcionAPI";
+import { PlusIcon } from "@heroicons/react/20/solid";
 
 
   // Tipado de props
@@ -60,39 +61,52 @@ import { getSuscripcionById } from "@/api/SuscripcionAPI";
     const navigate = useNavigate();
     return (
       <>
-        <div className="p-4">
-            
-          <h2 className="text-xl font-semibold text-center">Administración de Gestores</h2>
-          <p className="text-center text-sm text-orange-500 mt-1">Límite según plan:  {suscripcion?.plan.cantidadGestores }</p>
-  
-          <h3 className="mt-6 mb-2 text-md font-medium">Listado de gestores:</h3>
-  
-          <div className="flex gap-4 flex-wrap">
+
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-4xl font-black text-gray-800">Listado Gestores</h1>
+            <p className="text-orange-500 font-medium text-sm mt-1">
+              Límite según plan: {suscripcion?.plan.cantidadGestores }
+            </p>
+          </div>
+            {/* Botón para agregar nuevo gestor */}
+            {personas.length < (suscripcion?.plan.cantidadGestores ?? 0) && (
+              <div className="relative group" >
+                <button
+                  className="w-12 h-12 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-600 transition-all shadow-lg text-white text-3xl font-bold"
+                  onClick={() => navigate(location.pathname + "?inviteManager=true")}
+                >
+                  <PlusIcon className="h-6 w-6" />
+                </button>
+                <span className="absolute left-1/2 -translate-x-1/2 bottom-16 bg-gray-800 text-white text-sm px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-md">
+                        Invitar gestor
+                </span>
+              </div>
+
+              )}
+        </div>
+
+
+        <div>
+
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10">
             {personas.map((persona) => (
               <div
                 key={persona.rut}
-                className="w-40 h-32 bg-white rounded-xl shadow border flex flex-col items-center justify-center p-2"
+                className="bg-white shadow-md rounded-xl p-6 flex flex-col items-start space-y-4 border hover:shadow-lg transition"
               >
-                <div className="w-10 h-10 rounded-full bg-neutral-500 mb-2" />
-                <p className="text-sm font-medium">{persona.nombre}</p>
+                <div className="w-6 h-6 rounded-full bg-green-300" />
+                <p className="text-xl font-bold text-gray-700">{persona.nombre}</p>
                 <p className="text-sm font-medium">{persona.rut}</p>
-                <p className="text-xs text-gray-500">+569{persona.telefono}</p>
-                <p className="text-xs text-gray-500">{persona.usuario.correoUsuario}</p>
+                <p className="text-sm text-gray-400">+569{persona.telefono}</p>
+                <p className="text-sm text-gray-400">{persona.usuario.correoUsuario}</p>
               </div>
             ))}
-  
-            {/* Botón para agregar nuevo gestor */}
-              {personas.length < (suscripcion?.plan.cantidadGestores ?? 0) && (
-                <button
-                  className="w-40 h-32 rounded-xl border-2 border-dashed flex items-center justify-center text-red-500 hover:bg-red-50 transition"
-                  onClick={() => navigate(location.pathname + "?inviteManager=true")}
-                >
-                  <span className="text-3xl font-bold">+</span>
-                </button>
-              )}
             <InviteManagerModal />
           </div>
         </div>
+        
       </>
     );
   }

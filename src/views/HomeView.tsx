@@ -38,7 +38,7 @@ const HomeView = () => {
     if (!data) return <div>No se encontraron datos</div>;
   return (
     <>
-      <div className="flex flex-col items-center justify-center ">
+      <div className="">
         <InfoGestores inquilinos={[data]} />
       </div>
 

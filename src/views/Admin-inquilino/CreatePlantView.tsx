@@ -3,20 +3,25 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
-import { UsersInviteForm } from "@/types/index";
-
-import InviteManagerForm from "@/components/managers/InviteManagerForm";
-import { InviteUsers } from "@/api/AuthAPI";
+import { InquilinoFormData, PlantaRegisterForm } from "@/types/index";
+import { createTenant } from "@/api/TenantAPI";
+import PlantForm from "@/components/plants/PlantForm";
+import { createPlantsByTenant } from "@/api/PlantasAPI";
 import { jwtDecode } from "jwt-decode";
 
-const InviteManagerView = () => {
+interface TokenPayload {
+  inquilinoId: string;
+}
+const CreatePlantView = () => {
   const navigate = useNavigate();
-
-  const initialValues: UsersInviteForm = {
+  const queryClient = useQueryClient();
+  const initialValues: PlantaRegisterForm = {
     nombre: "",
+    direccion: "",
+    estado: true,
+    usuarioId: "",
     inquilinoId: "",
-    correoUsuario: "",
-    rolId: 0,
+    comunaId: 0,
   };
   const {
     register,
@@ -25,17 +30,17 @@ const InviteManagerView = () => {
   } = useForm({ defaultValues: initialValues });
 
   const { mutate } = useMutation({
-    mutationFn: InviteUsers,
+    mutationFn: createPlantsByTenant,
     onError: (error) => {
       toast.error(error.message);
     },
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["plantas"] });
       toast.success(data.message);
-      navigate("/home");
     },
   });
 
-  const handleForm = async (formData: UsersInviteForm) => {
+  const handleForm = async (formData: PlantaRegisterForm) => {
     const token = localStorage.getItem("token");
     if (!token) {
       console.error("Token no encontrado");
@@ -52,8 +57,9 @@ const InviteManagerView = () => {
     }
     const formattedData = {
       ...formData,
-      rolId: Number(4),
+      estado: true,
       inquilinoId: inquilinoIdToken,
+      comunaId: Number(1),
     };
 
     mutate(formattedData);
@@ -68,11 +74,11 @@ const InviteManagerView = () => {
           onSubmit={handleSubmit(handleForm)}
           noValidate
         >
-          <InviteManagerForm register={register} errors={errors} />
+          <PlantForm register={register} errors={errors} />
 
           <input
             type="submit"
-            value="Asignar Gestor"
+            value="Asignar Planta"
             className="bg-orange-600 hover:bg-orange-800 w-full text-white uppercase font-bold cursor-pointer transition-colors"
           />
         </form>
@@ -81,4 +87,4 @@ const InviteManagerView = () => {
   );
 };
 
-export default InviteManagerView;
+export default CreatePlantView;

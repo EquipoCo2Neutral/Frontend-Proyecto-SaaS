@@ -15,6 +15,7 @@ import ConfirmAccountUsers from "./views/auth/ConfirmAccountView";
 import RequestNewCodeView from "./views/auth/RequestNewCodeView";
 import ForgotPasswordView from "./views/auth/ForgotPasswordView";
 import NewPasswordView from "./views/auth/NewPasswordView";
+import InfoPlantasView from "./views/Admin-inquilino/InfoPlantasView";
 
 export default function Router() {
   return (
@@ -39,6 +40,7 @@ export default function Router() {
         <Route element={<ProtectedRouteUsers />}>
           <Route element={<AppLayout />}>
             <Route path="/home" element={<HomeView />} index />
+            <Route path="/plants" element={<InfoPlantasView />} index />
           </Route>
         </Route>
 

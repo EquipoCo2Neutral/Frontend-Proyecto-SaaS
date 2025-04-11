@@ -1,5 +1,32 @@
 import { z } from "zod";
 
+/*Plantas */
+
+const plantasSchema = z.object({
+  idPlanta: z.string(),
+  nombre: z.string(),
+  direccion: z.string(),
+  estado: z.boolean(),
+  usuarioId: z.string(),
+  inquilinoId: z.string(),
+  comunaId: z.number(),
+});
+
+export type Plantas = z.infer<typeof plantasSchema>;
+export type PlantaRegisterForm = Pick<
+  Plantas,
+  "nombre" | "direccion" | "estado" | "usuarioId" | "inquilinoId" | "comunaId"
+>;
+
+export const dashboardPlantasSchema = z.array(
+  plantasSchema.pick({
+    idPlanta: true,
+    nombre: true,
+    direccion: true,
+    estado: true,
+  })
+);
+
 /* Auth & Users */
 //EQUIPO SAAS
 const authEquipoSchema = z.object({
@@ -95,6 +122,17 @@ export type InquilinoFormData = Pick<
   | "sectorE"
   | "subSectorE"
   | "estadoInquilino"
+>;
+
+export type CreateInquilinoFormData = Pick<
+  Inquilino,
+  | "rutInquilino"
+  | "nombreInquilino"
+  | "direccionInquilino"
+  | "telefonoInquilino"
+  | "correoInquilino"
+  | "sectorE"
+  | "subSectorE"
 >;
 
 export const dashboardTenantsSchema = z.array(

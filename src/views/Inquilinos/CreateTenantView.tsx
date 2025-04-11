@@ -17,6 +17,7 @@ const CreateTenantView = () => {
     correoInquilino: "",
     sectorE: "",
     subSectorE: "",
+    estadoInquilino: true,
   };
   const {
     register,

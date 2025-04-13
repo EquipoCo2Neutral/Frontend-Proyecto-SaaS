@@ -6,20 +6,23 @@ import { Outlet } from "react-router-dom";
 const AuthLayout = () => {
   return (
     <>
-      <div className="bg-slate-200 min-h-screen">
-        <div className="py-10 lg:py-20 mx-auto w-[450px]  ">
-          <div className="flex justify-center ">
-            <div className="w-[300px]">
+      <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-[#e0f7fa] via-[#f1f8e9] to-[#e1f5fe]">
+        <div className="w-full max-w-md sm:max-w-lg   p-6 sm:p-10 ">
+          {/* Logo */}
+          <div className="flex justify-center mb-8">
+            <div className="w-36">
               <Logo />
             </div>
           </div>
 
-          <div className="mt-10">
+          {/* Form */}
+          <div>
             <Outlet />
           </div>
         </div>
-        <ToastContainer pauseOnHover={false} pauseOnFocusLoss={false} />
       </div>
+
+      <ToastContainer pauseOnHover={false} pauseOnFocusLoss={false} />
     </>
   );
 };

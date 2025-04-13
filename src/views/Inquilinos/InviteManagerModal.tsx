@@ -67,7 +67,7 @@ export default function InviteManagerModal() {
 
                   <p className="text-xl font-bold">
                     Llena el formulario e invita {""}
-                    <span className="text-orange-600">al gestor</span>
+                    <span className="text-blue-600">al gestor</span>
                   </p>
                   <InviteManagerView />
                 </DialogPanel>

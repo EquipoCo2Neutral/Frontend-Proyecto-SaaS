@@ -73,7 +73,7 @@ const CreatePlantView = () => {
       <div className="max-w-3xl mx-auto">
         <form
           action=""
-          className="mt-10 bg-orange-300 shadow-lg p-10 rounded-lg"
+          className="mt-10 bg-green-300 shadow-lg p-10 rounded-lg"
           onSubmit={handleSubmit(handleForm)}
           noValidate
         >
@@ -82,7 +82,7 @@ const CreatePlantView = () => {
           <input
             type="submit"
             value="Asignar Planta"
-            className="bg-orange-600 hover:bg-orange-800 w-full text-white uppercase font-bold cursor-pointer transition-colors"
+            className="bg-green-600 hover:bg-green-800 w-full text-white uppercase font-bold cursor-pointer transition-colors"
           />
         </form>
       </div>

@@ -54,7 +54,7 @@ export default function AddTenatModal() {
 
                   <p className="text-xl font-bold">
                     Llena el formulario y agrega {""}
-                    <span className="text-orange-600">una planta</span>
+                    <span className="text-green-600">una planta</span>
                   </p>
                   <CreatePlantView />
                 </DialogPanel>

@@ -6,7 +6,7 @@ import {
   MenuItems,
   Transition,
 } from "@headlessui/react";
-import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
+import { EllipsisVerticalIcon, PlusIcon } from "@heroicons/react/20/solid";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTenat, getTenants } from "@/api/TenantAPI";
@@ -57,7 +57,7 @@ export default function DashboardView() {
                 className="w-12 h-12 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-600 transition-all shadow-lg hover:shadow-xl text-white text-3xl font-bold focus:outline-none focus:ring-4 focus:ring-red-300"
                 onClick={() => navigate(location.pathname + "?newTenant=true")}
               >
-                +
+                <PlusIcon className="h-6 w-6" />
               </button>
               <span className="absolute left-1/2 -translate-x-1/2 bottom-16 bg-gray-800 text-white text-sm px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-md">
                 Agregar inquilino

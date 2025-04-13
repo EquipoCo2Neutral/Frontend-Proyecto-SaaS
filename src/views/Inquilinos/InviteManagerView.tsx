@@ -64,7 +64,7 @@ const InviteManagerView = () => {
       <div className="max-w-3xl mx-auto">
         <form
           action=""
-          className="mt-10 bg-orange-300 shadow-lg p-10 rounded-lg"
+          className="mt-10 bg-blue-300 shadow-lg p-10 rounded-lg"
           onSubmit={handleSubmit(handleForm)}
           noValidate
         >
@@ -73,7 +73,7 @@ const InviteManagerView = () => {
           <input
             type="submit"
             value="Asignar Gestor"
-            className="bg-orange-600 hover:bg-orange-800 w-full text-white uppercase font-bold cursor-pointer transition-colors"
+            className="bg-blue-600 hover:bg-blue-800 w-full text-white uppercase font-bold cursor-pointer transition-colors"
           />
         </form>
       </div>

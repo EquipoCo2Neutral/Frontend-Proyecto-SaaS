@@ -1,6 +1,12 @@
 import { UseFormRegister, FieldErrors } from "react-hook-form";
 import ErrorMessage from "../ErrorMessage";
-import { Inquilino, Persona, PlantaRegisterForm, Suscripcion, Usuario } from "types";
+import {
+  Inquilino,
+  Persona,
+  PlantaRegisterForm,
+  Suscripcion,
+  Usuario,
+} from "types";
 import { useQuery } from "@tanstack/react-query";
 import { use, useEffect, useState } from "react";
 import api from "@/lib/axios";
@@ -18,11 +24,12 @@ export default function PlantForm({ errors, register }: PlantFormProps) {
   const [selectedRegion, setSelectedRegion] = useState<string>("");
   const [selectedGestor, setSelectedGestor] = useState<string>("");
 
-  const [inquilinoIdToken, setinquilinoIdToken] = useState<string>(localStorage.getItem("inquilinoId") || "");
+  const [inquilinoIdToken, setinquilinoIdToken] = useState<string>(
+    localStorage.getItem("inquilinoId") || ""
+  );
 
-  const [usuarios, setUsuarios] = useState<Usuario[]>([]); 
+  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [personas, setPersonas] = useState<Persona[]>([]);
-
 
   // Fetch PAISES
   const { data: paises = [], isLoading: loadingPaises } = useQuery({
@@ -66,26 +73,25 @@ export default function PlantForm({ errors, register }: PlantFormProps) {
     setinquilinoIdToken(decodedToken.inquilinoId);
 
     async function fetchUsuario() {
-        try {
-            const { usuarios } = await getUsuarios({
-              rolId: 4,
-              inquilinoId: inquilinoIdToken,
-            });
-            setUsuarios(usuarios);
-            console.log("Usuarios obtenidos con rol gestor:", usuarios);
-            const usuarioIds = usuarios.map((u) => u.usuarioId);
-            console.log("IDs de usuarios:", usuarioIds);
-            if (usuarioIds.length === 0) return;
-            const dataPersonas = await getPersonasPorUsuarios(usuarioIds);
-            setPersonas(dataPersonas);
-            console.log("Personas con rol gestor obtenidas:", dataPersonas);
-          } catch (error) {
-            console.error("Error al obtener los usuarios:", error);
-          }
-        }
+      try {
+        const { usuarios } = await getUsuarios({
+          rolId: 4,
+          inquilinoId: inquilinoIdToken,
+        });
+        setUsuarios(usuarios);
+        console.log("Usuarios obtenidos con rol gestor:", usuarios);
+        const usuarioIds = usuarios.map((u) => u.usuarioId);
+        console.log("IDs de usuarios:", usuarioIds);
+        if (usuarioIds.length === 0) return;
+        const dataPersonas = await getPersonasPorUsuarios(usuarioIds);
+        setPersonas(dataPersonas);
+        console.log("Personas con rol gestor obtenidas:", dataPersonas);
+      } catch (error) {
+        console.error("Error al obtener los usuarios:", error);
+      }
+    }
     fetchUsuario();
-    
-  },[inquilinoIdToken]);
+  }, [inquilinoIdToken]);
 
   return (
     <>
@@ -127,7 +133,7 @@ export default function PlantForm({ errors, register }: PlantFormProps) {
         <label htmlFor="gestorPlanta" className="text-sm uppercase font-bold">
           Gestor de la Planta
         </label>
-          <select
+        <select
           id="gestorPlanta"
           className="w-full p-3 border border-gray-200"
           {...register("usuarioId", {
@@ -139,13 +145,11 @@ export default function PlantForm({ errors, register }: PlantFormProps) {
           }}
         >
           <option value="">Seleccione un Gestor</option>
-          {
-            personas.map((persona,index) => (
-              <option key={index} value={persona.usuario.usuarioId}>
-                {persona.nombre}
-              </option>
-            )
-          )}
+          {personas.map((persona, index) => (
+            <option key={index} value={persona.usuario.usuarioId}>
+              {persona.nombre}
+            </option>
+          ))}
         </select>
         {errors.usuarioId && (
           <ErrorMessage>{errors.usuarioId.message}</ErrorMessage>

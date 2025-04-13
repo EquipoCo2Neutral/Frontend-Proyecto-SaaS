@@ -1,48 +1,45 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FiMenu, FiHome, FiUser, FiSettings, FiLogOut } from "react-icons/fi";
+import { FiMenu, FiHome, FiUser, FiSettings, FiLogOut, FiDatabase } from "react-icons/fi";
 import { jwtDecode } from "jwt-decode";
 
 const AppLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [rol, setRol] = useState<string | null>(null); //estado para el rol
   const navigate = useNavigate();
 
-  const toggleSidebar = () => setCollapsed((prev) => !prev);
-  const handleLogout = () => {
+  useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (token) {
       try {
         const decoded: { rol: string } = jwtDecode(token);
-
-        // Redirigir según el rol
-        if (decoded.rol === "adminsaas") {
-          localStorage.removeItem("token");
-          navigate("/auth/login");
-        } else {
-          localStorage.removeItem("token");
-          navigate("/auth/login-users");
-        }
+        setRol(decoded.rol);
       } catch (error) {
-        console.error("Error al decodificar el token:", error);
-        localStorage.removeItem("token");
-        navigate("/auth/login-users"); // En caso de error, redirigir a login general
+        console.error("Token inválido:", error);
+        setRol(null);
       }
-    } else {
-      navigate("/auth/login-users"); // Si no hay token, redirigir a login
+    }
+  }, []);
+
+  const toggleSidebar = () => setCollapsed((prev) => !prev);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    if(rol === "adminsaas") {
+      navigate("/auth/login"); // Redirige a login general
+
+    }
+    else {
+      navigate("/auth/login-users"); // Redirige a login de usuarios
     }
   };
 
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
       {/* SIDEBAR */}
-      <aside
-        className={`${
-          collapsed ? "w-20" : "w-64"
-        } bg-white border-r transition-all duration-300 flex flex-col shadow-sm`}
-      >
+      <aside className={`${collapsed ? "w-20" : "w-64"} bg-white border-r transition-all duration-300 flex flex-col shadow-sm`}>
         {/* Logo + Toggle */}
         <div className="flex items-center justify-between px-4 py-4 border-b">
           <div className="flex items-center gap-2">
@@ -58,37 +55,34 @@ const AppLayout = () => {
               </h1>
             )}
           </div>
-          <button
-            onClick={toggleSidebar}
-            className="text-gray-500 hover:text-indigo-600"
-          >
+          <button onClick={toggleSidebar} className="text-gray-500 hover:text-indigo-600">
             <FiMenu size={20} />
           </button>
         </div>
 
         {/* Nav items */}
         <nav className="flex-1 px-2 py-4 space-y-2">
-          <SidebarItem icon={<FiHome />} label="Inicio" collapsed={collapsed} />
-          <SidebarItem
-            icon={<FiUser />}
-            label="Usuarios"
-            collapsed={collapsed}
-          />
-          <SidebarItem
-            icon={<FiSettings />}
-            label="Configuración"
-            collapsed={collapsed}
-          />
+          {//<SidebarItem icon={<FiHome />} label="Inicio" collapsed={collapsed} onClick={() => navigate(rol === "adminsaas" ? "/" : "/home")} />
+          }
+          {/* Rutas visibles solo para adminsaas */}
+          {rol === "adminsaas" && (
+            <SidebarItem icon={<FiUser />} label="Inquilinos" collapsed={collapsed} onClick={() => navigate("/")} />
+          )}
+
+          {/* Rutas visibles solo para admininquilino */}
+          {rol === "admininquilino" && (
+            <>
+              <SidebarItem icon={<FiUser />} label="Gestores" collapsed={collapsed} onClick={() => navigate("/home")} />
+              <SidebarItem icon={<FiDatabase />} label="Plantas" collapsed={collapsed} onClick={() => navigate("/plants")} />
+            </>
+          )}
+
+          <SidebarItem icon={<FiSettings />} label="Configuración" collapsed={collapsed} />
         </nav>
 
         {/* Logout */}
         <div className="px-4 py-4 border-t">
-          <SidebarItem
-            icon={<FiLogOut />}
-            label="Cerrar sesión"
-            collapsed={collapsed}
-            onClick={handleLogout}
-          />
+          <SidebarItem icon={<FiLogOut />} label="Cerrar sesión" collapsed={collapsed} onClick={handleLogout} />
         </div>
       </aside>
 
@@ -96,17 +90,10 @@ const AppLayout = () => {
       <div className="flex-1 flex flex-col">
         {/* Header */}
         <header className="sticky top-0 z-10 bg-white shadow-sm px-6 py-4 flex justify-between items-center">
-          <div className="text-xl font-semibold text-gray-700">
-            {collapsed ? "Enerley" : "Panel de Control"}
-          </div>
+          <div className="text-xl font-semibold text-gray-700">{collapsed ? "Enerley" : "Panel de Control"}</div>
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600 hidden sm:block">
-              Bienvenido, Usuario
-            </span>
-            <button
-              className="text-red-500 hover:text-red-700 transition"
-              onClick={handleLogout}
-            >
+            <span className="text-sm text-gray-600 hidden sm:block">Bienvenido, {rol}</span>
+            <button className="text-red-500 hover:text-red-700 transition" onClick={handleLogout}>
               <FiLogOut size={20} />
             </button>
           </div>
@@ -144,7 +131,6 @@ const SidebarItem: React.FC<{
       }`}
     >
       {icon}
-
       {!collapsed && <span className="text-sm font-medium">{label}</span>}
     </button>
   );

@@ -7,12 +7,13 @@ import { updateTenant } from "@/api/TenantAPI";
 import { toast } from "react-toastify";
 
 type EditTenantFormProps = {
+  suscripcion: number;
   data: InquilinoFormData;
   inquilinoId: Inquilino["inquilinoId"];
   onSuccess?: () => void; 
 };
 
-const EditTenantForm = ({ data, inquilinoId, onSuccess }: EditTenantFormProps) => {
+const EditTenantForm = ({ suscripcion, data, inquilinoId, onSuccess }: EditTenantFormProps) => {
   const navigate = useNavigate();
 
   const {
@@ -54,6 +55,7 @@ const EditTenantForm = ({ data, inquilinoId, onSuccess }: EditTenantFormProps) =
       rutInquilino: Number(formData.rutInquilino),
       telefonoInquilino: Number(formData.telefonoInquilino),
       estadoInquilino: formData.estadoInquilino,
+      suscripcionId: Number(suscripcion),
     };
 
     const data = {
@@ -61,6 +63,7 @@ const EditTenantForm = ({ data, inquilinoId, onSuccess }: EditTenantFormProps) =
       inquilinoId,
     };
     mutate(data);
+    console.log("Update",data)
   };
   return (
     <>

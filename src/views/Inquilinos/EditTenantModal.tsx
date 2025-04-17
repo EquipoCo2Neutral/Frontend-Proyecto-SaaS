@@ -29,7 +29,7 @@ const EditTenantModal: React.FC<EditTenantModalProps> = ({
           >
             ❌
           </button>
-          <EditTenantForm data={data} inquilinoId={inquilinoId} onSuccess={onClose} />
+          <EditTenantForm suscripcion={data.suscripcion.id} data={data} inquilinoId={inquilinoId} onSuccess={onClose} />
         </div>
       </div>      
     </div>

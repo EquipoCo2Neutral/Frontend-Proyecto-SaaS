@@ -35,3 +35,21 @@ export const getUsuarios = async (params?: GetUsuariosParams) => {
     throw error;
   }
 };
+
+export const getUsuarioPorCorreo = async (correo: string) => {
+  try {
+    const response = await api.get(`/usuario/correo/${correo}`);
+
+    const parsed = usuarioSchema.safeParse(response.data);
+
+    if (!parsed.success) {
+      console.error("Error validando la respuesta de usuario:", parsed.error);
+      throw new Error("Respuesta inválida del servidor");
+    }
+
+    return parsed.data;
+  } catch (error) {
+    console.error("Error al obtener usuario por correo:", error);
+    throw error;
+  }
+};

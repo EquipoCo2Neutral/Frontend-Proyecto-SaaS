@@ -1,5 +1,5 @@
 
-import { personaSchema, Persona } from "@/types/index";
+import { personaSchema, Persona, PersonaRegistro } from "@/types/index";
 import api from "@/lib/axios";
 
 import { z } from "zod";
@@ -27,3 +27,14 @@ export const getPersonasPorUsuarios = async (usuarioIds: string[]) => {
       throw error;
     }
   };
+
+export const createPersona = async (nuevaPersona: PersonaRegistro) => {
+    try {
+      const response = await api.post("/Persona", nuevaPersona);
+      return response.data;
+    } catch (error) {
+      console.error("Error al crear persona:", error);
+      throw error;
+    }
+  };
+  

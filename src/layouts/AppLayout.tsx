@@ -9,7 +9,10 @@ import {
   FiSettings,
   FiLogOut,
   FiDatabase,
+  FiBarChart2,
+  FiBriefcase,
 } from "react-icons/fi";
+import { FaIndustry, FaBuilding } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 
@@ -125,10 +128,16 @@ const AppLayout = () => {
                 onClick={() => navigate("/home")}
               />
               <SidebarItem
-                icon={<FiDatabase />}
+                icon={<FaIndustry />}
                 label="Plantas"
                 collapsed={collapsed}
                 onClick={() => navigate("/plants")}
+              />
+              <SidebarItem
+                icon={<FiBarChart2 />}
+                label="Dashboard"
+                collapsed={collapsed}
+                onClick={() => navigate("/dashboard")}
               />
             </>
           )}

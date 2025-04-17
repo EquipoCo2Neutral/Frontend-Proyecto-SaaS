@@ -48,6 +48,10 @@ const authUsersSchema = z.object({
   contrasenaUsuario: z.string(),
   rolId: z.number(),
   token: z.string(),
+  rut: z.number(),
+  primerApellido: z.string(),
+  segundoApellido: z.string(),
+  telefono: z.number(),
 });
 
 export type AuthUsers = z.infer<typeof authUsersSchema>;
@@ -64,7 +68,7 @@ export type UsersInviteForm = Pick<
 
 export type UsersRegisterForm = Pick<
   AuthUsers,
-  "correoUsuario" | "contrasenaUsuario" | "inquilinoId" | "rolId"
+  "correoUsuario" | "contrasenaUsuario" | "inquilinoId" | "nombre" | "rolId" | "rut" | "primerApellido" | "segundoApellido" | "telefono"
 >;
 export type RequestConfirmationCodeForm = Pick<AuthUsers, "correoUsuario">;
 export type ForgotPasswordForm = Pick<AuthUsers, "correoUsuario">;
@@ -181,4 +185,14 @@ export const personaSchema = z.object({
   usuario: usuarioSchema,
 });
 
+export const personaRegistro = z.object({
+  rut: z.number(),
+  nombre: z.string(),
+  primerApellido: z.string(),
+  segundoApellido: z.string(),
+  telefono: z.number(),
+  usuarioId: z.string(),
+});
+
 export type Persona = z.infer<typeof personaSchema>;
+export type PersonaRegistro = z.infer<typeof personaRegistro>;

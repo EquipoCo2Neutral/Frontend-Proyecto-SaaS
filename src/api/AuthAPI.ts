@@ -72,7 +72,7 @@ export async function ValidateInvitation(token: string) {
 }
 export async function ConfirmAccount(token: string) {
   try {
-    const { data } = await api.post<string>(`/token/confirm`, token);
+    const { data } = await api.post<string>(`/token/confirm`, {token});
 
     return data;
   } catch (error) {

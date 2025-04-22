@@ -8,7 +8,9 @@ import LoginView from "./views/auth/LoginView";
 import ProtectedRoute from "./components/ProtectedRoute";
 import InfoTenantView from "./views/Inquilinos/InfoTenantView";
 import HomeView from "./views/HomeView";
-import ProtectedRouteUsers from "./components/ProtectedRouteUsers";
+import ProtectedRouteUsers, {
+  ProtectedRouteGestor,
+} from "./components/ProtectedRouteUsers";
 import LoginUsersView from "./views/auth/LoginUsersView";
 import RegisterUsersView from "./views/auth/RegisterUsersView";
 import ConfirmAccountUsers from "./views/auth/ConfirmAccountView";
@@ -16,6 +18,7 @@ import RequestNewCodeView from "./views/auth/RequestNewCodeView";
 import ForgotPasswordView from "./views/auth/ForgotPasswordView";
 import NewPasswordView from "./views/auth/NewPasswordView";
 import InfoPlantasView from "./views/Admin-inquilino/InfoPlantasView";
+import HomeManager from "./views/gestor/HomeManager";
 
 export default function Router() {
   return (
@@ -41,6 +44,12 @@ export default function Router() {
           <Route element={<AppLayout />}>
             <Route path="/home" element={<HomeView />} index />
             <Route path="/plants" element={<InfoPlantasView />} index />
+          </Route>
+        </Route>
+        {/* RUTAS PARA GESTOR PROTEGIDAS */}
+        <Route element={<ProtectedRouteGestor />}>
+          <Route element={<AppLayout />}>
+            <Route path="/gestor/home" element={<HomeManager />} index />
           </Route>
         </Route>
 

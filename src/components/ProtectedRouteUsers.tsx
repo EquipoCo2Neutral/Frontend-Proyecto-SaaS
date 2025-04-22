@@ -10,3 +10,7 @@ const ProtectedRouteUsers = () => {
 };
 
 export default ProtectedRouteUsers;
+
+export function ProtectedRouteGestor() {
+  return isGestor() ? <Outlet /> : <Navigate to="/auth/login-users" replace />;
+}

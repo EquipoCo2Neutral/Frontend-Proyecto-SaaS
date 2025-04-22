@@ -118,6 +118,15 @@ const AppLayout = () => {
             />
           )}
 
+          {rol === "gestorenergético" && (
+            <SidebarItem
+              icon={<FaIndustry />}
+              label="Plantas"
+              collapsed={collapsed}
+              onClick={() => navigate("/gestor/home")}
+            />
+          )}
+
           {/* Rutas visibles solo para admininquilino */}
           {rol === "admininquilino" && (
             <>

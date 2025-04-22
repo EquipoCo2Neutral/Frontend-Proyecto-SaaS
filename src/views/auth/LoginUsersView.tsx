@@ -33,18 +33,23 @@ export default function LoginUsersView() {
 
       const decoded: { rol: string } = jwtDecode(token);
 
-      if (
-        decoded.rol === "admininquilino" ||
-        decoded.rol === "gestorenergético"
-      ) {
+      if (decoded.rol === "admininquilino") {
         localStorage.setItem("token", token);
         toast.success("inicio de sesión exitoso");
         setTimeout(() => {
           navigate("/home");
         }, 2000);
       } else {
-        toast.error("No tienes permisos para acceder.");
-        localStorage.removeItem("token");
+        if (decoded.rol === "gestorenergético") {
+          localStorage.setItem("token", token);
+          toast.success("inicio de sesión exitoso");
+          setTimeout(() => {
+            navigate("/gestor/home");
+          }, 2000);
+        } else {
+          toast.error("No tienes permisos para acceder.");
+          localStorage.removeItem("token");
+        }
       }
     },
   });

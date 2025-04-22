@@ -6,6 +6,7 @@ import { jwtDecode } from "jwt-decode";
 
 interface TokenPayload {
   inquilinoId: string;
+  correoUsuario: string
 }
 
 export async function getPlantsByTenant() {
@@ -38,6 +39,32 @@ export async function createPlantsByTenant(formData: PlantaRegisterForm) {
   try {
     const { data } = await api.post(`/planta`, formData);
     return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
+    }
+    throw error;
+  }
+}
+
+export async function getPlantsByEmail() {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Token no encontrado");
+
+    const decoded: TokenPayload = jwtDecode(token);
+    const correoUsuario = decoded.correoUsuario;
+
+    if (!correoUsuario) throw new Error("inquilinoId no disponible en token");
+
+    const { data } = await api(`/planta/usuario/${correoUsuario}`);
+    const response = dashboardPlantasSchema.safeParse(data);
+
+    if (response.success) {
+      return response.data;
+    } else {
+      throw new Error("Error al validar la respuesta");
+    }
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message);

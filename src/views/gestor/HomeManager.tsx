@@ -1,24 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-
 import { Link } from "react-router-dom";
-import { getPlantsByTenant } from "@/api/PlantasAPI";
-
+import { getPlantsByEmail} from "@/api/PlantasAPI";
 import AddPlantModal from "../Admin-inquilino/AddPlantModal";
 import { useEffect, useState } from "react";
-import { getTenantById } from "@/api/TenantAPI";
-import { getSuscripcionById } from "@/api/SuscripcionAPI";
-import { Inquilino, Suscripcion } from "@/types/index";
 import { jwtDecode } from "jwt-decode";
 
 export default function HomeManager() {
   const [inquilinoIdToken, setInquilinoIdToken] = useState<string>("");
-  const [inquilino, setInquilino] = useState<Inquilino | null>(null);
 
-  const [suscripcionId, setSuscripcionId] = useState<number>(0);
 
   const { data, isLoading } = useQuery({
     queryKey: ["plantas"],
-    queryFn: getPlantsByTenant,
+    queryFn: getPlantsByEmail,
   });
 
   useEffect(() => {
@@ -29,18 +22,7 @@ export default function HomeManager() {
     }
     const decodedToken: any = jwtDecode(token);
     setInquilinoIdToken(decodedToken.inquilinoId);
-    async function fetchInquilino() {
-      try {
-        if (inquilinoIdToken) {
-          const fetchedInquilino = await getTenantById(inquilinoIdToken);
-          setInquilino(fetchedInquilino);
-          setSuscripcionId(fetchedInquilino.suscripcion.id);
-          console.log("Inquilino obtenido:", fetchedInquilino);
-        }
-      } catch (error) {
-        console.error("Error al obtener el inquilino:", error);
-      }
-    }
+  
   }, [inquilinoIdToken]);
 
   if (isLoading) {
@@ -76,7 +58,7 @@ export default function HomeManager() {
                 to={`/plantas/${planta.idPlanta}`}
                 className="text-blue-500 hover:underline text-sm mt-2"
               >
-                Ver detalles
+                Ver Procesos
               </Link>
             </div>
           ))}

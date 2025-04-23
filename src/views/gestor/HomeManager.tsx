@@ -1,13 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { getPlantsByEmail} from "@/api/PlantasAPI";
+import { getPlantsByEmail } from "@/api/PlantasAPI";
 import AddPlantModal from "../Admin-inquilino/AddPlantModal";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
 export default function HomeManager() {
   const [inquilinoIdToken, setInquilinoIdToken] = useState<string>("");
-
 
   const { data, isLoading } = useQuery({
     queryKey: ["plantas"],
@@ -22,7 +21,6 @@ export default function HomeManager() {
     }
     const decodedToken: any = jwtDecode(token);
     setInquilinoIdToken(decodedToken.inquilinoId);
-  
   }, [inquilinoIdToken]);
 
   if (isLoading) {
@@ -55,7 +53,7 @@ export default function HomeManager() {
                 </p>
               </div>
               <Link
-                to={`/plantas/${planta.idPlanta}`}
+                to={`/gestor/planta/${planta.idPlanta}`}
                 className="text-blue-500 hover:underline text-sm mt-2"
               >
                 Ver Procesos

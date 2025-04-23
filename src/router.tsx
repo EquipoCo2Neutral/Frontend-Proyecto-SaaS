@@ -19,6 +19,7 @@ import ForgotPasswordView from "./views/auth/ForgotPasswordView";
 import NewPasswordView from "./views/auth/NewPasswordView";
 import InfoPlantasView from "./views/Admin-inquilino/InfoPlantasView";
 import HomeManager from "./views/gestor/HomeManager";
+import PlantsManagersView from "./views/gestor/PlantsManagersView";
 
 export default function Router() {
   return (
@@ -50,6 +51,11 @@ export default function Router() {
         <Route element={<ProtectedRouteGestor />}>
           <Route element={<AppLayout />}>
             <Route path="/gestor/home" element={<HomeManager />} index />
+            <Route
+              path="/gestor/planta/:plantaId"
+              element={<PlantsManagersView />}
+              index
+            />
           </Route>
         </Route>
 

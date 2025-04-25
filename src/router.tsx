@@ -19,7 +19,10 @@ import ForgotPasswordView from "./views/auth/ForgotPasswordView";
 import NewPasswordView from "./views/auth/NewPasswordView";
 import InfoPlantasView from "./views/Admin-inquilino/InfoPlantasView";
 import HomeManager from "./views/gestor/HomeManager";
-import PlantsManagersView from "./views/gestor/PlantsManagersView";
+
+import ProcessManagerView from "./views/gestor/plants-views/ProcessManagersView";
+import ProcessView from "./views/gestor/plants-views/ProcessView";
+import MonthProcessView from "./views/gestor/plants-views/MonthProcessView";
 
 export default function Router() {
   return (
@@ -53,7 +56,17 @@ export default function Router() {
             <Route path="/gestor/home" element={<HomeManager />} index />
             <Route
               path="/gestor/planta/:plantaId"
-              element={<PlantsManagersView />}
+              element={<ProcessManagerView />}
+              index
+            />
+            <Route
+              path="/gestor/planta/proceso/:idProceso"
+              element={<ProcessView />}
+              index
+            />
+            <Route
+              path="/gestor/planta/proceso/mes-proceso/:idMesProceso"
+              element={<MonthProcessView />}
               index
             />
           </Route>

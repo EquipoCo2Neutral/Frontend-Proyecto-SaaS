@@ -68,7 +68,15 @@ export type UsersInviteForm = Pick<
 
 export type UsersRegisterForm = Pick<
   AuthUsers,
-  "correoUsuario" | "contrasenaUsuario" | "inquilinoId" | "nombre" | "rolId" | "rut" | "primerApellido" | "segundoApellido" | "telefono"
+  | "correoUsuario"
+  | "contrasenaUsuario"
+  | "inquilinoId"
+  | "nombre"
+  | "rolId"
+  | "rut"
+  | "primerApellido"
+  | "segundoApellido"
+  | "telefono"
 >;
 export type RequestConfirmationCodeForm = Pick<AuthUsers, "correoUsuario">;
 export type ForgotPasswordForm = Pick<AuthUsers, "correoUsuario">;
@@ -100,6 +108,34 @@ export const suscripcionSchema = z.object({
 
 export type Suscripcion = z.infer<typeof suscripcionSchema>;
 
+/* PROCESOS */
+
+export const procesosSchema = z.object({
+  idProceso: z.string(),
+  año_proceso: z.number(),
+  estado: z.boolean(),
+  idPlanta: z.string(),
+});
+
+export type Procesos = z.infer<typeof procesosSchema>;
+export type ProcesosFormData = Pick<Procesos, "año_proceso" | "idPlanta">;
+
+/*Meses */
+export const mesesSchema = z.object({
+  idMes: z.number(),
+  nombre: z.string(),
+});
+
+/* MESPROCESO */
+export const mesProcesoSchema = z.object({
+  idMesProceso: z.string(),
+  estado: z.boolean(),
+  proceso: procesosSchema,
+  mes: mesesSchema,
+});
+
+export type MesProceso = z.infer<typeof mesProcesoSchema>;
+export type MesProcesoFormData = Pick<MesProceso, "estado" | "proceso" | "mes">;
 /* INQUILINOS  */
 
 export const inquilinosSchema = z.object({

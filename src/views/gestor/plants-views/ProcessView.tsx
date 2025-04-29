@@ -1,7 +1,9 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import { getMesesProcesoByProceso } from "@/api/MesProcesoAPI";
+import { setRegistroAnual as setRegistroAnualAPI } from "@/api/MesProcesoAPI";
 
 type MesProceso = {
   idMesProceso: string;
@@ -14,13 +16,17 @@ type MesProceso = {
     idProceso: string;
     año_proceso: number;
     estado: boolean;
+    registroAnual?: boolean;
   };
 };
 
 const ProcessView = () => {
   const { idProceso } = useParams<{ idProceso: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const [registroAnual, setRegistroAnual] = useState(false);
+  const [bloqueadoMensual, setBloqueadoMensual] = useState(false);
   const [selectedMesId, setSelectedMesId] = useState<string | null>(null);
 
   const { data: mesesProceso, isLoading } = useQuery<MesProceso[]>({
@@ -28,6 +34,30 @@ const ProcessView = () => {
     queryFn: () => getMesesProcesoByProceso(idProceso!),
     enabled: !!idProceso,
   });
+
+  const mutation = useMutation({
+    mutationFn: () => setRegistroAnualAPI(idProceso!),
+    onSuccess: () => {
+      setRegistroAnual(true);
+      setBloqueadoMensual(true);
+      if (idProceso) {
+        queryClient.invalidateQueries({
+          queryKey: ["mesesProceso", idProceso],
+        });
+      }
+      Swal.fire("Activado", "El registro anual ha sido activado.", "success");
+    },
+    onError: () => {
+      Swal.fire("Error", "No se pudo activar el registro anual.", "error");
+    },
+  });
+
+  useEffect(() => {
+    if (mesesProceso?.[0]?.proceso?.registroAnual) {
+      setRegistroAnual(true);
+      setBloqueadoMensual(true);
+    }
+  }, [mesesProceso]);
 
   if (isLoading) return <p>Cargando...</p>;
   if (!mesesProceso) return <p>No se encontraron datos</p>;
@@ -39,6 +69,25 @@ const ProcessView = () => {
       navigate(`/gestor/planta/proceso/mes-proceso/${idMesProceso}`);
     } else {
       setSelectedMesId(idMesProceso);
+    }
+  };
+
+  const handleToggleRegistroAnual = async () => {
+    if (!registroAnual) {
+      const result = await Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Si seleccionas el registro anual no podrás volver a registrar de forma mensual.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, continuar",
+        cancelButtonText: "Cancelar",
+      });
+
+      if (result.isConfirmed) {
+        mutation.mutate();
+      }
     }
   };
 
@@ -54,14 +103,19 @@ const ProcessView = () => {
               type="checkbox"
               className="sr-only peer"
               checked={registroAnual}
-              onChange={() => setRegistroAnual(!registroAnual)}
+              disabled={bloqueadoMensual}
+              onChange={handleToggleRegistroAnual}
             />
-            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer dark:bg-gray-400 peer-checked:bg-green-500 transition-all"></div>
+            <div
+              className={`w-11 h-6 bg-gray-300 rounded-full transition-all 
+              peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300
+              peer-checked:bg-green-500
+              ${bloqueadoMensual ? "opacity-50 cursor-not-allowed" : ""}`}
+            />
           </label>
         </div>
       </div>
 
-      {/* Meses */}
       {!registroAnual ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {(() => {

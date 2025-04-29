@@ -2,8 +2,12 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { getMesesProcesoByProceso } from "@/api/MesProcesoAPI";
-import { setRegistroAnual as setRegistroAnualAPI } from "@/api/MesProcesoAPI";
+import {
+  eliminarMesAnualDescartado,
+  eliminarMesesDescartados,
+  getMesesProcesoByProceso,
+  updateRegistroAnual as setRegistroAnualAPI,
+} from "@/api/MesProcesoAPI";
 
 type MesProceso = {
   idMesProceso: string;
@@ -28,6 +32,7 @@ const ProcessView = () => {
   const [registroAnual, setRegistroAnual] = useState(false);
   const [bloqueadoMensual, setBloqueadoMensual] = useState(false);
   const [selectedMesId, setSelectedMesId] = useState<string | null>(null);
+  const [tieneMesesConfirmados, setTieneMesesConfirmados] = useState(false);
 
   const { data: mesesProceso, isLoading } = useQuery<MesProceso[]>({
     queryKey: ["mesesProceso", idProceso],
@@ -36,7 +41,10 @@ const ProcessView = () => {
   });
 
   const mutation = useMutation({
-    mutationFn: () => setRegistroAnualAPI(idProceso!),
+    mutationFn: async () => {
+      await setRegistroAnualAPI(idProceso!);
+      await eliminarMesesDescartados(idProceso!);
+    },
     onSuccess: () => {
       setRegistroAnual(true);
       setBloqueadoMensual(true);
@@ -56,6 +64,22 @@ const ProcessView = () => {
     if (mesesProceso?.[0]?.proceso?.registroAnual) {
       setRegistroAnual(true);
       setBloqueadoMensual(true);
+    }
+
+    if (mesesProceso) {
+      const algunoConfirmado = mesesProceso.some(
+        (mes) => mes.mes.idMes !== 13 && mes.estado
+      );
+      setTieneMesesConfirmados(algunoConfirmado);
+
+      if (algunoConfirmado && !registroAnual && idProceso) {
+        // Elimina el registro anual si ya hay meses confirmados
+        eliminarMesAnualDescartado(idProceso).then(() => {
+          queryClient.invalidateQueries({
+            queryKey: ["mesesProceso", idProceso],
+          });
+        });
+      }
     }
   }, [mesesProceso]);
 
@@ -96,24 +120,26 @@ const ProcessView = () => {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold text-green-800">Proceso {año}</h2>
 
-        <div className="flex items-center space-x-2">
-          <span className="text-sm font-medium">Registro anual</span>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              className="sr-only peer"
-              checked={registroAnual}
-              disabled={bloqueadoMensual}
-              onChange={handleToggleRegistroAnual}
-            />
-            <div
-              className={`w-11 h-6 bg-gray-300 rounded-full transition-all 
-              peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300
-              peer-checked:bg-green-500
-              ${bloqueadoMensual ? "opacity-50 cursor-not-allowed" : ""}`}
-            />
-          </label>
-        </div>
+        {!tieneMesesConfirmados && (
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-medium">Registro anual</span>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={registroAnual}
+                disabled={bloqueadoMensual}
+                onChange={handleToggleRegistroAnual}
+              />
+              <div
+                className={`w-11 h-6 bg-gray-300 rounded-full transition-all 
+                peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300
+                peer-checked:bg-green-500
+                ${bloqueadoMensual ? "opacity-50 cursor-not-allowed" : ""}`}
+              />
+            </label>
+          </div>
+        )}
       </div>
 
       {!registroAnual ? (

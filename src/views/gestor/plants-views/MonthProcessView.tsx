@@ -13,24 +13,33 @@ import VentaEnergeticosView from "./registros/VentaEnergeticosView";
 const MonthProcessView = () => {
   const [selectedProcess, setSelectedProcess] = useState<string>("");
 
+  const procesos = [
+    "adquisiciones",
+    "exportación",
+    "generación",
+    "transformación Energeticos",
+    "usos Finales",
+    "venta de Electricidad",
+    "venta de Energeticos"
+  ];
   const renderSelectedComponent = () => {
     switch (selectedProcess) {
       case "adquisiciones":
         return <AdquisicionesView />;
-      case "exportacion":
+      case "exportación":
         return <ExportacionView />;
-      case "generacion":
+      case "generación":
         return <GeneracionView />;
-      case "transformacionEnergeticos":
+      case "transformación Energeticos":
         return <TransformacionEnergeticosView />;
-      case "usosFinales":
+      case "usos Finales":
         return <UsosFinalesView />;
-      case "ventaElectricidad":
+      case "venta de Electricidad":
         return <VentaElectricidadView />;
-      case "ventaEnergeticos":
+      case "venta de Energeticos":
         return <VentaEnergeticosView />;
       default:
-        return <div>Selecciona un proceso</div>;
+        return <h2 className="text-2xl font-semibold mb-6 text-gray-800 text-center">Selecciona un proceso</h2>;
     }
   };
   const handleResultClick = () => {
@@ -51,15 +60,14 @@ return (
           value={selectedProcess}
           onChange={(e) => setSelectedProcess(e.target.value)}
         >
-          <option value="">-- Selecciona un proceso --</option>
+          <option value="">-- Proceso --</option>
           <option value="adquisiciones">Adquisiciones</option>
-          <option value="usosFinales">Usos Finales</option>
-          <option value="generacion">Generación Eléctrica</option>
-          <option value="ventaElectricidad">Venta de Electricidad</option>
-          <option value="ventaEnergeticos">Venta de Energéticos</option>
-          <option value="transformacionEnergeticos">Transformación de Energéticos</option>
-          <option value="exportacion">Exportación</option>
-          <option value="resultadoTransacciones">Resultado de Transacciones</option>
+          <option value="usos Finales">Usos Finales</option>
+          <option value="generación">Generación Eléctrica</option>
+          <option value="venta de Electricidad">Venta de Electricidad</option>
+          <option value="venta de Energeticos">Venta de Energéticos</option>
+          <option value="transformación Energeticos">Transformación de Energéticos</option>
+          <option value="exportación">Exportación</option>
         </select>
 
         {/* Ícono de flecha */}
@@ -89,8 +97,55 @@ return (
     <div className="border-t border-gray-200 pt-4 flex justify-center items-center">
       {renderSelectedComponent()}
     </div>
-  </div>
-);
+
+    {/* Vista cuadrados de selección de procesos */}
+    {selectedProcess === "" && (
+      <div className="p-6 max-w-7xl mx-auto">
+
+        {/* Primera fila con 4 cajas */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {procesos.slice(0, 4).map((process) => (
+            <div
+              key={process}
+              onClick={() => setSelectedProcess(process)}
+              className={`cursor-pointer border rounded-2xl p-8 shadow-md transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center text-center ${
+                selectedProcess === process
+                  ? "bg-blue-500 text-white"
+                  : "bg-white hover:bg-blue-50"
+              }`}
+            >
+              <span className="text-sm md:text-base font-medium break-words text-center block max-w-[180px]">
+                {process.toUpperCase()}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Segunda fila centrada con 3 cajas */}
+        <div className="mt-6 flex justify-center ">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {procesos.slice(4).map((process) => (
+              <div
+                key={process}
+                onClick={() => setSelectedProcess(process)}
+                className={`cursor-pointer border rounded-2xl p-8 shadow-md transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center text-center ${
+                  selectedProcess === process
+                    ? "bg-blue-500 text-white"
+                    : "bg-white hover:bg-blue-50"
+                }`}
+              >
+                <span className="text-sm md:text-base font-medium break-words text-center block max-w-[180px]">
+                  {process.toUpperCase()}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+
+    </div>
+  );
 };
 
 export default MonthProcessView;

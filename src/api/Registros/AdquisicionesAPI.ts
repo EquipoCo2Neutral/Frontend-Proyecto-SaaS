@@ -1,4 +1,4 @@
-import { AdquisicionesLista, AdquisicionFormData, AdquisicionLista } from "@/types/index";
+import { AdquisicionesLista, AdquisicionFormData} from "@/types/index";
 import api from "@/lib/axios";
 import { isAxiosError } from "axios";
 

@@ -16,10 +16,7 @@ export default function AdquisicionesView() {
 
   // Consulta con React Query
   const { 
-    data: adquisiciones = [], 
-    isLoading, 
-    isError, 
-    error 
+    data: adquisiciones = []
   } = useQuery<AdquisicionesLista, Error>({
     queryKey: ['adquisiciones', mesId],
     queryFn: () => getAcquisitionById(mesId),
@@ -29,16 +26,13 @@ export default function AdquisicionesView() {
     const searchLower = search.toLowerCase();
     return (
       adq?.transaccion?.nombreTransaccion?.toLowerCase().includes(searchLower) ||
-      adq?.energetico?.nombreEnergetico?.toLowerCase().includes(searchLower) ||
-      adq?.unidad?.nombreUnidad?.toLowerCase().includes(searchLower) ||
-      adq?.Cantidad?.toString().includes(searchLower)
+      adq?.energetico?.nombreEnergetico?.toLowerCase().includes(searchLower)
+     
     );
   });
 
 
 
-  if (isLoading) return <div>Cargando...</div>;
-  if (isError) return <div>Error: {error?.message}</div>;
   console.log("aaa", adquisiciones);
 
   return (
@@ -73,6 +67,7 @@ export default function AdquisicionesView() {
             <table className="min-w-full text-sm text-left">
               <thead className="bg-gray-200 text-gray-700">
                 <tr>
+                  <th className="px-4 py-2">N°</th>
                   <th className="px-4 py-2">Tipo</th>
                   <th className="px-4 py-2">Energético</th>
                   <th className="px-4 py-2">Cantidad</th>
@@ -82,11 +77,16 @@ export default function AdquisicionesView() {
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {adquisicionesFiltradas.length > 0 ? (
-                  adquisicionesFiltradas.map((adquisicion) => (
+                  adquisicionesFiltradas.map((adquisicion, index) => (
                     <tr 
                       key={adquisicion?.idAdquisicion} 
                       className="hover:bg-gray-50 transition-colors"
                     >
+                      
+                      <td className="px-4 py-3">
+                        {index + 1}
+                      </td>
+
                       <td className="px-4 py-3">
                         {adquisicion?.transaccion?.nombreTransaccion || "N/A"}
                       </td>

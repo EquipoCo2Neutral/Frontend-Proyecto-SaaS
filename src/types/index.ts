@@ -1,5 +1,42 @@
 import { z } from "zod";
 
+/*Adquisiciones */
+
+const adquisicionSchema = z.object({
+  idAdquisicion: z.number(),
+  idTransaccion: z.number(),
+  idGrupoEnergetico: z.number(),
+  idEnergetico: z.number(),
+  idPaisOrigen: z.number(),
+  empresaOrigen: z.string(),
+  porcentajeHumedad: z.number(),
+  compraMercadoSpot: z.boolean(),
+  idMesProceso: z.string(),
+  idUnidad: z.number(),
+  Cantidad: z.number(),
+  cantidadInicial: z.number(),
+  cantidadFinal: z.number(),
+  poderCalorifico: z.number(),
+});
+
+export type Adquisiciones = z.infer<typeof adquisicionSchema>;
+export type AdquisicionFormData = Pick<
+  Adquisiciones,
+  | "idTransaccion"
+  | "idGrupoEnergetico"
+  | "idEnergetico"
+  | "idPaisOrigen"
+  | "empresaOrigen"
+  | "porcentajeHumedad"
+  | "compraMercadoSpot"
+  | "idMesProceso"
+  | "idUnidad"
+  | "Cantidad"
+  | "cantidadInicial"
+  | "cantidadFinal"
+  | "poderCalorifico"
+>;
+
 /*Plantas */
 
 const plantasSchema = z.object({

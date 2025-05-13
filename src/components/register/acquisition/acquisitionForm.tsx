@@ -4,6 +4,7 @@ import { AdquisicionFormData } from "@/types/index";
 import { useTransacciones } from "../../../hooks/useTransaccione";
 import { useGrupoE } from "../../../hooks/useGrupoEnergetico";
 import { useEnergeticosPorGrupo } from "../../../hooks/useEnergetico";
+import { useUnidadesByEnergetico } from "../../../hooks/useUnidad";
 
 interface AdquisicionFormProps {
   register: UseFormRegister<AdquisicionFormData>;
@@ -20,6 +21,9 @@ export default function AdquisicionForm({
   const { data: gruposEnergeticos, isLoading: loadingGrupos } = useGrupoE();
   const { data: energeticos, isLoading: energeticosLoading } =
     useEnergeticosPorGrupo(Number(watch("idGrupoEnergetico")));
+  const { data: unidades, isLoading: loadingUnidades } =
+    useUnidadesByEnergetico(Number(watch("idEnergetico")));
+
   const idTransaccion = watch("idTransaccion");
   const idGrupoEnergetico = watch("idGrupoEnergetico");
   const idEnergetico = watch("idEnergetico");
@@ -135,14 +139,24 @@ export default function AdquisicionForm({
             <label htmlFor="idUnidad" className="text-sm font-bold uppercase">
               Unidad
             </label>
-            <input
+            <select
               id="idUnidad"
-              type="number"
               className="w-full p-2 border border-gray-300 rounded"
+              disabled={!parsedIdEnergetico || loadingUnidades}
               {...register("idUnidad", {
                 required: "La unidad es requerida",
               })}
-            />
+            >
+              <option value="" disabled>
+                {loadingUnidades ? "Cargando..." : "Seleccione una unidad"}
+              </option>
+              {unidades?.map((u) => (
+                <option key={u.idUnidad} value={u.idUnidad}>
+                  {u.nombreUnidad}
+                </option>
+              ))}
+            </select>
+
             {errors.idUnidad && (
               <ErrorMessage>{errors.idUnidad.message}</ErrorMessage>
             )}

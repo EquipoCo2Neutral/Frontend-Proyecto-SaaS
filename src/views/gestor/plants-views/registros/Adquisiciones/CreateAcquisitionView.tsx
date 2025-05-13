@@ -19,14 +19,14 @@ const CreateAcquisitionView = () => {
 
   const initialValues: AdquisicionFormData = {
     idMesProceso: idMesProceso ?? "",
-    idTransaccion: 0,
-    idGrupoEnergetico: 0,
-    idEnergetico: 0,
+    idTransaccion: "",
+    idGrupoEnergetico: "",
+    idEnergetico: "",
     idPaisOrigen: null,
     empresaOrigen: null,
     porcentajeHumedad: null,
     compraMercadoSpot: null,
-    idUnidad: 0,
+    idUnidad: "",
     Cantidad: 0,
     cantidadInicial: null,
     cantidadFinal: null,
@@ -40,13 +40,16 @@ const CreateAcquisitionView = () => {
     formState: { errors },
   } = useForm({ defaultValues: initialValues });
 
+  const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: createAcquisition,
+
     onError: (error) => {
       toast.error(error.message);
     },
     onSuccess: (data) => {
       toast.success(data.message);
+      queryClient.invalidateQueries({ queryKey: ["adquisiciones"] });
       navigate(`/gestor/planta/proceso/mes-proceso/${idMesProceso}`);
     },
   });
@@ -54,9 +57,9 @@ const CreateAcquisitionView = () => {
   const handleForm = async (formData: AdquisicionFormData) => {
     const formattedData = {
       idMesProceso: idMesProceso ?? "",
-      idTransaccion: Number(formData.idTransaccion),
-      idGrupoEnergetico: Number(formData.idGrupoEnergetico),
-      idEnergetico: Number(formData.idEnergetico),
+      idTransaccion: formData.idTransaccion,
+      idGrupoEnergetico: formData.idGrupoEnergetico,
+      idEnergetico: formData.idEnergetico,
       idPaisOrigen:
         formData.idPaisOrigen !== null ? Number(formData.idPaisOrigen) : null,
       empresaOrigen: formData.empresaOrigen ?? null,
@@ -65,7 +68,7 @@ const CreateAcquisitionView = () => {
           ? Number(formData.porcentajeHumedad)
           : null,
       compraMercadoSpot: formData.compraMercadoSpot ?? null,
-      idUnidad: Number(formData.idUnidad),
+      idUnidad: formData.idUnidad,
       Cantidad: Number(formData.Cantidad),
       cantidadInicial:
         formData.cantidadInicial !== null

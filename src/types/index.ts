@@ -4,15 +4,16 @@ import { z } from "zod";
 
 const adquisicionSchema = z.object({
   idAdquisicion: z.number(),
-  idTransaccion: z.number(),
-  idGrupoEnergetico: z.number(),
-  idEnergetico: z.number(),
+  idTransaccion: z.string(),
+  idGrupoEnergetico: z.string(),
+  idEnergetico: z.string(),
+  idUnidad: z.string(),
   idPaisOrigen: z.number().nullable(),
   empresaOrigen: z.string().nullable(),
   porcentajeHumedad: z.number().nullable(),
   compraMercadoSpot: z.boolean().nullable(),
   idMesProceso: z.string(),
-  idUnidad: z.number(),
+
   Cantidad: z.number(),
   cantidadInicial: z.number().nullable(),
   cantidadFinal: z.number().nullable(),
@@ -65,10 +66,12 @@ const unidadSchema = z.object({
   nombreUnidad: z.string(),
 });
 
-const paisOrigenSchema = z.object({
-  idPais: z.number(),
-  nombrePais: z.string(),
-}).nullable();
+const paisOrigenSchema = z
+  .object({
+    idPais: z.number(),
+    nombrePais: z.string(),
+  })
+  .nullable();
 
 // Schema principal para Adquisición
 export const adquisicionSchemaLista = z.object({
@@ -98,9 +101,6 @@ export type AdquisicionLista = z.infer<typeof adquisicionSchemaLista>;
 export type AdquisicionesLista = AdquisicionLista[];
 
 /*-------------------*/
-
-
-
 
 /*Plantas */
 

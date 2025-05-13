@@ -3,6 +3,7 @@ import ErrorMessage from "../../ErrorMessage";
 import { AdquisicionFormData } from "@/types/index";
 import { useTransacciones } from "../../../hooks/useTransaccione";
 import { useGrupoE } from "../../../hooks/useGrupoEnergetico";
+import { useEnergeticosPorGrupo } from "../../../hooks/useEnergetico";
 
 interface AdquisicionFormProps {
   register: UseFormRegister<AdquisicionFormData>;
@@ -17,6 +18,8 @@ export default function AdquisicionForm({
 }: AdquisicionFormProps) {
   const { data: transacciones, isLoading } = useTransacciones();
   const { data: gruposEnergeticos, isLoading: loadingGrupos } = useGrupoE();
+  const { data: energeticos, isLoading: energeticosLoading } =
+    useEnergeticosPorGrupo(Number(watch("idGrupoEnergetico")));
   const idTransaccion = watch("idTransaccion");
   const idGrupoEnergetico = watch("idGrupoEnergetico");
   const idEnergetico = watch("idEnergetico");
@@ -98,20 +101,28 @@ export default function AdquisicionForm({
         )}
       </div>
 
-      {/* idEnergetico */}
+      {/* idEnergetico - Selección Dinámica */}
       <div>
         <label htmlFor="idEnergetico" className="text-sm font-bold uppercase">
           Energético
         </label>
-        <input
+        <select
           id="idEnergetico"
-          type="number"
-          disabled={!idGrupoEnergetico}
           className="w-full p-2 border border-gray-300 rounded"
+          disabled={energeticosLoading || !idGrupoEnergetico}
           {...register("idEnergetico", {
             required: "El energético es requerido",
           })}
-        />
+        >
+          <option value="" disabled>
+            {energeticosLoading ? "Cargando..." : "Seleccione un energético"}
+          </option>
+          {energeticos?.map((e) => (
+            <option key={e.idEnergetico} value={e.idEnergetico}>
+              {e.nombreEnergetico}
+            </option>
+          ))}
+        </select>
         {errors.idEnergetico && (
           <ErrorMessage>{errors.idEnergetico.message}</ErrorMessage>
         )}

@@ -7,16 +7,16 @@ const adquisicionSchema = z.object({
   idTransaccion: z.number(),
   idGrupoEnergetico: z.number(),
   idEnergetico: z.number(),
-  idPaisOrigen: z.number(),
-  empresaOrigen: z.string(),
-  porcentajeHumedad: z.number(),
-  compraMercadoSpot: z.boolean(),
+  idPaisOrigen: z.number().nullable(),
+  empresaOrigen: z.string().nullable(),
+  porcentajeHumedad: z.number().nullable(),
+  compraMercadoSpot: z.boolean().nullable(),
   idMesProceso: z.string(),
   idUnidad: z.number(),
   Cantidad: z.number(),
-  cantidadInicial: z.number(),
-  cantidadFinal: z.number(),
-  poderCalorifico: z.number(),
+  cantidadInicial: z.number().nullable(),
+  cantidadFinal: z.number().nullable(),
+  poderCalorifico: z.number().nullable(),
 });
 
 export type Adquisiciones = z.infer<typeof adquisicionSchema>;

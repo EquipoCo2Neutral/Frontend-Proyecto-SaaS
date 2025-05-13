@@ -1,11 +1,45 @@
 import { useState } from "react";
 import { PlusIcon, QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
 import AddAcquisitionModal from "./AddAcquisitionModal";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { AdquisicionesLista } from "@/types/index";
+import { getAcquisitionById } from "@/api/Registros/AdquisicionesAPI";
 
 export default function AdquisicionesView() {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+  const pathParts = location.pathname.split("/");
+  const mesId = pathParts[pathParts.length - 1]; 
+  console.log("mesId", mesId);
+
+  // Consulta con React Query
+  const { 
+    data: adquisiciones = [], 
+    isLoading, 
+    isError, 
+    error 
+  } = useQuery<AdquisicionesLista, Error>({
+    queryKey: ['adquisiciones', mesId],
+    queryFn: () => getAcquisitionById(mesId),
+  });
+
+  const adquisicionesFiltradas = adquisiciones.filter((adq) => {
+    const searchLower = search.toLowerCase();
+    return (
+      adq?.transaccion?.nombreTransaccion?.toLowerCase().includes(searchLower) ||
+      adq?.energetico?.nombreEnergetico?.toLowerCase().includes(searchLower) ||
+      adq?.unidad?.nombreUnidad?.toLowerCase().includes(searchLower) ||
+      adq?.Cantidad?.toString().includes(searchLower)
+    );
+  });
+
+
+
+  if (isLoading) return <div>Cargando...</div>;
+  if (isError) return <div>Error: {error?.message}</div>;
+  console.log("aaa", adquisiciones);
 
   return (
     <div className="min-h-screen bg-sky-200 py-8 px-4">
@@ -46,15 +80,53 @@ export default function AdquisicionesView() {
                   <th className="px-4 py-2">Acción</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td
-                    className="px-4 py-3 text-center text-gray-400"
-                    colSpan={5}
-                  >
-                    No hay adquisiciones registradas.
-                  </td>
-                </tr>
+              <tbody className="divide-y divide-gray-200">
+                {adquisicionesFiltradas.length > 0 ? (
+                  adquisicionesFiltradas.map((adquisicion) => (
+                    <tr 
+                      key={adquisicion?.idAdquisicion} 
+                      className="hover:bg-gray-50 transition-colors"
+                    >
+                      <td className="px-4 py-3">
+                        {adquisicion?.transaccion?.nombreTransaccion || "N/A"}
+                      </td>
+                      <td className="px-4 py-3">
+                        {adquisicion?.energetico?.nombreEnergetico || "N/A"}
+                      </td>
+                      <td className="px-4 py-3">
+                        {adquisicion?.Cantidad?.toLocaleString()}
+                      </td>
+                      <td className="px-4 py-3">
+                        {adquisicion?.unidad?.nombreUnidad?.split("(")[0].trim() || "N/A"}
+                      </td>
+                      <td className="px-4 py-3 space-x-2 whitespace-nowrap">
+                        <button 
+                          className="text-blue-500 hover:text-blue-700 hover:underline"
+                          onClick={() => navigate(`/adquisiciones/editar/${adquisicion?.idAdquisicion}`)}
+                        >
+                          Editar
+                        </button>
+                        <button 
+                          className="text-red-500 hover:text-red-700 hover:underline"
+                          onClick={() => console.log('Eliminar', adquisicion?.idAdquisicion)}
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td 
+                      className="px-4 py-6 text-center text-gray-400" 
+                      colSpan={7}
+                    >
+                      {search 
+                        ? "No se encontraron adquisiciones que coincidan con la búsqueda" 
+                        : "No hay adquisiciones registradas para este período."}
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

@@ -37,6 +37,71 @@ export type AdquisicionFormData = Pick<
   | "poderCalorifico"
 >;
 
+/*Adquisiciones para listar refacotrizar y eliminar mas tarde */
+
+// Definiciones individuales de schemas Zod para relaciones
+const mesProcesoSchemaLista = z.object({
+  idMesProceso: z.string().uuid(),
+  estado: z.boolean(),
+});
+
+const transaccionSchema = z.object({
+  idTransaccion: z.number(),
+  nombreTransaccion: z.string(),
+});
+
+const grupoEnergeticoSchema = z.object({
+  idGrupoEnergetico: z.number(),
+  nombreGrupoEnergetico: z.string(),
+});
+
+const energeticoSchema = z.object({
+  idEnergetico: z.number(),
+  nombreEnergetico: z.string(),
+});
+
+const unidadSchema = z.object({
+  idUnidad: z.number(),
+  nombreUnidad: z.string(),
+});
+
+const paisOrigenSchema = z.object({
+  idPais: z.number(),
+  nombrePais: z.string(),
+}).nullable();
+
+// Schema principal para Adquisición
+export const adquisicionSchemaLista = z.object({
+  idAdquisicion: z.number(),
+  compraMercadoSpot: z.boolean(),
+  Cantidad: z.number(),
+  cantidadInicial: z.number().nullable(),
+  cantidadFinal: z.number().nullable(),
+  empresaOrigen: z.string().nullable(),
+  poderCalorifico: z.number().nullable(),
+  porcentajeHumedad: z.number().nullable(),
+  mesProceso: mesProcesoSchemaLista,
+  transaccion: transaccionSchema,
+  grupoEnergetico: grupoEnergeticoSchema,
+  energetico: energeticoSchema,
+  unidad: unidadSchema,
+  paisOrigen: paisOrigenSchema,
+});
+// Tipos TypeScript inferidos
+export type MesProcesoLista = z.infer<typeof mesProcesoSchemaLista>;
+export type Transaccion = z.infer<typeof transaccionSchema>;
+export type GrupoEnergetico = z.infer<typeof grupoEnergeticoSchema>;
+export type Energetico = z.infer<typeof energeticoSchema>;
+export type Unidad = z.infer<typeof unidadSchema>;
+export type PaisOrigen = z.infer<typeof paisOrigenSchema>;
+export type AdquisicionLista = z.infer<typeof adquisicionSchemaLista>;
+export type AdquisicionesLista = AdquisicionLista[];
+
+/*-------------------*/
+
+
+
+
 /*Plantas */
 
 const plantasSchema = z.object({

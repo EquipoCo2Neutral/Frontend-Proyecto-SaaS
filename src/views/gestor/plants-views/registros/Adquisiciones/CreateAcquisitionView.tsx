@@ -1,18 +1,24 @@
 import { AdquisicionFormData } from "@/types/index";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import ProcessForm from "@/components/process/ProcessForm";
 import { createAcquisition } from "@/api/Registros/AdquisicionesAPI";
+import AdquisicionForm from "@/components/register/acquisition/acquisitionForm";
 
 const CreateAcquisitionView = () => {
+  const navigate = useNavigate();
   //extraer mesProceso de la URL
   const { idMesProceso } = useParams();
   console.log(idMesProceso);
 
   const initialValues: AdquisicionFormData = {
-    idMesProceso: "",
+    idMesProceso: idMesProceso ?? "",
     idTransaccion: 0,
     idGrupoEnergetico: 0,
     idEnergetico: 0,
@@ -30,14 +36,51 @@ const CreateAcquisitionView = () => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm({ defaultValues: initialValues });
 
   const { mutate } = useMutation({
     mutationFn: createAcquisition,
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: (data) => {
+      toast.success(data.message);
+      navigate(`/gestor/planta/proceso/mes-proceso/${idMesProceso}`);
+    },
   });
 
-  const handleForm = "1";
+  const handleForm = async (formData: AdquisicionFormData) => {
+    const formattedData = {
+      idMesProceso: idMesProceso ?? "",
+      idTransaccion: Number(formData.idTransaccion),
+      idGrupoEnergetico: Number(formData.idGrupoEnergetico),
+      idEnergetico: Number(formData.idEnergetico),
+      idPaisOrigen:
+        formData.idPaisOrigen !== null ? Number(formData.idPaisOrigen) : null,
+      empresaOrigen: formData.empresaOrigen ?? null,
+      porcentajeHumedad:
+        formData.porcentajeHumedad !== null
+          ? Number(formData.porcentajeHumedad)
+          : null,
+      compraMercadoSpot: formData.compraMercadoSpot ?? null,
+      idUnidad: Number(formData.idUnidad),
+      Cantidad: Number(formData.Cantidad),
+      cantidadInicial:
+        formData.cantidadInicial !== null
+          ? Number(formData.cantidadInicial)
+          : null,
+      cantidadFinal:
+        formData.cantidadFinal !== null ? Number(formData.cantidadFinal) : null,
+      poderCalorifico:
+        formData.poderCalorifico !== null
+          ? Number(formData.poderCalorifico)
+          : null,
+    };
+    mutate(formattedData);
+  };
+
   //mutacion para registrar adquisicion
 
   return (
@@ -45,16 +88,16 @@ const CreateAcquisitionView = () => {
       <div className="max-w-3xl mx-auto">
         <form
           action=""
-          className="mt-10 bg-orange-300 shadow-lg p-10 rounded-lg"
+          className="mt-10 bg-purple-300 shadow-lg p-10 rounded-lg"
           onSubmit={handleSubmit(handleForm)}
           noValidate
         >
-          <ProcessForm register={register} errors={errors} />
+          <AdquisicionForm register={register} errors={errors} watch={watch} />
 
           <input
             type="submit"
-            value="Agregar Proceso"
-            className="bg-orange-600 hover:bg-orange-800 w-full text-white uppercase font-bold cursor-pointer transition-colors"
+            value="Registrar Adquisicion"
+            className="bg-purple-600 hover:bg-purple-800 w-full text-white uppercase font-bold cursor-pointer transition-colors"
           />
         </form>
       </div>

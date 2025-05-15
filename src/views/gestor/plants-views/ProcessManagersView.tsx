@@ -39,39 +39,43 @@ const ProcessManagerView = () => {
 
   const isProcesoCompletado = (idProceso: string): boolean => {
     const meses = mesesPorProceso[idProceso] || [];
-
     if (meses.length === 0) return false;
 
-    const mensual = meses
+    const mes13 = meses.find((m) => m.mes.idMes === 13);
+
+    if (mes13) {
+      return mes13.estado === true;
+    }
+
+    // Si no hay mes 13, todos los meses 1-12 deben estar completados
+    return meses
       .filter((m) => m.mes.idMes >= 1 && m.mes.idMes <= 12)
       .every((m) => m.estado === true);
-
-    const anual = meses.find((m) => m.mes.idMes === 13)?.estado === true;
-
-    return mensual || anual;
   };
 
   useEffect(() => {
     const actualizarEstadoSiCompleto = async () => {
       for (const proceso of procesos) {
         const meses = mesesPorProceso[proceso.idProceso] || [];
-
         if (meses.length === 0) continue;
 
-        const mensual = meses
-          .filter((m) => m.mes.idMes >= 1 && m.mes.idMes <= 12)
-          .every((m) => m.estado === true);
+        const mes13 = meses.find((m) => m.mes.idMes === 13);
 
-        const anual = meses.find((m) => m.mes.idMes === 13)?.estado === true;
+        let completado = false;
+        if (mes13) {
+          completado = mes13.estado === true;
+        } else {
+          completado = meses
+            .filter((m) => m.mes.idMes >= 1 && m.mes.idMes <= 12)
+            .every((m) => m.estado === true);
+        }
 
-        const completado = mensual || anual;
-
-        if (completado && proceso.estado === false) {
+        if (completado !== proceso.estado) {
           try {
             await api.put(`/proceso/${proceso.idProceso}/estado`, {
               idProceso: proceso.idProceso,
               año_proceso: proceso.año_proceso,
-              estado: true,
+              estado: completado,
             });
             refetch();
           } catch (error) {
@@ -164,7 +168,7 @@ const ProcessManagerView = () => {
                     </p>
                   </div>
                   <button
-                    className={`text-black hover:text-gray-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed`}
+                    className="text-black hover:text-gray-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                     onClick={(e) => {
                       e.stopPropagation();
                       alert(`Descargar datos del año ${proceso.año_proceso}`);

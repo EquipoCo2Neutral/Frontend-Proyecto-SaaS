@@ -37,6 +37,7 @@ const CreateAcquisitionView = () => {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm({ defaultValues: initialValues });
 
@@ -95,7 +96,12 @@ const CreateAcquisitionView = () => {
           onSubmit={handleSubmit(handleForm)}
           noValidate
         >
-          <AdquisicionForm register={register} errors={errors} watch={watch} />
+          <AdquisicionForm
+            register={register}
+            errors={errors}
+            watch={watch}
+            setValue={setValue}
+          />
 
           <input
             type="submit"

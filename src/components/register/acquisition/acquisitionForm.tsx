@@ -1,21 +1,30 @@
-import { UseFormRegister, FieldErrors, UseFormWatch } from "react-hook-form";
+import {
+  UseFormRegister,
+  FieldErrors,
+  UseFormWatch,
+  UseFormSetValue,
+} from "react-hook-form";
+import { useEffect, useRef } from "react";
 import ErrorMessage from "../../ErrorMessage";
 import { AdquisicionFormData } from "@/types/index";
 import { useTransacciones } from "../../../hooks/useTransaccione";
 import { useGrupoE } from "../../../hooks/useGrupoEnergetico";
 import { useEnergeticosPorGrupo } from "../../../hooks/useEnergetico";
 import { useUnidadesByEnergetico } from "../../../hooks/useUnidad";
+import { usePaises } from "../../../hooks/usePais";
 
 interface AdquisicionFormProps {
   register: UseFormRegister<AdquisicionFormData>;
   errors: FieldErrors<AdquisicionFormData>;
   watch: UseFormWatch<AdquisicionFormData>;
+  setValue: UseFormSetValue<AdquisicionFormData>;
 }
 
 export default function AdquisicionForm({
   register,
   errors,
   watch,
+  setValue,
 }: AdquisicionFormProps) {
   const { data: transacciones, isLoading } = useTransacciones();
   const { data: gruposEnergeticos, isLoading: loadingGrupos } = useGrupoE();
@@ -23,6 +32,7 @@ export default function AdquisicionForm({
     useEnergeticosPorGrupo(Number(watch("idGrupoEnergetico")));
   const { data: unidades, isLoading: loadingUnidades } =
     useUnidadesByEnergetico(Number(watch("idEnergetico")));
+  const { data: paises, isLoading: loadingPaises } = usePaises();
 
   const idTransaccion = watch("idTransaccion");
   const idGrupoEnergetico = watch("idGrupoEnergetico");
@@ -31,6 +41,51 @@ export default function AdquisicionForm({
   const parsedIdEnergetico = Number(idEnergetico);
   const parsedIdTransaccion = Number(idTransaccion);
   const parsedIdGrupoEnergetico = Number(idGrupoEnergetico);
+
+  const prevGrupoRef = useRef<number | null>(null);
+
+  // Reset dinámico al cambiar de grupo energético
+  useEffect(() => {
+    if (
+      parsedIdGrupoEnergetico &&
+      prevGrupoRef.current !== null &&
+      prevGrupoRef.current !== parsedIdGrupoEnergetico
+    ) {
+      setValue("idEnergetico", "");
+      setValue("idUnidad", "");
+    }
+    prevGrupoRef.current = parsedIdGrupoEnergetico;
+  }, [parsedIdGrupoEnergetico, setValue]);
+
+  // Limpiar campos condicionales al cambiar transacción o energético
+  useEffect(() => {
+    if (parsedIdTransaccion !== 2) {
+      setValue("idPaisOrigen", null);
+    }
+    if (parsedIdTransaccion !== 3) {
+      setValue("cantidadInicial", null);
+      setValue("cantidadFinal", null);
+    }
+    if (!(parsedIdTransaccion === 1 && parsedIdEnergetico === 43)) {
+      setValue("compraMercadoSpot", null);
+    }
+    if (parsedIdTransaccion !== 1) {
+      setValue("empresaOrigen", "");
+    }
+
+    const energeticosConPoderCalorifico = [
+      1, 2, 8, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 22, 23, 25, 26, 29,
+    ];
+    const energeticosConHumedad = [8, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20];
+
+    if (!energeticosConPoderCalorifico.includes(parsedIdEnergetico)) {
+      setValue("poderCalorifico", null);
+    }
+
+    if (!energeticosConHumedad.includes(parsedIdEnergetico)) {
+      setValue("porcentajeHumedad", null);
+    }
+  }, [parsedIdTransaccion, parsedIdEnergetico, setValue]);
 
   const showUnidadYCantidad =
     !!parsedIdTransaccion || !!parsedIdGrupoEnergetico;
@@ -105,7 +160,7 @@ export default function AdquisicionForm({
         )}
       </div>
 
-      {/* idEnergetico - Selección Dinámica */}
+      {/* idEnergetico */}
       <div>
         <label htmlFor="idEnergetico" className="text-sm font-bold uppercase">
           Energético
@@ -156,7 +211,6 @@ export default function AdquisicionForm({
                 </option>
               ))}
             </select>
-
             {errors.idUnidad && (
               <ErrorMessage>{errors.idUnidad.message}</ErrorMessage>
             )}
@@ -185,27 +239,36 @@ export default function AdquisicionForm({
         </>
       )}
 
-      {/* País Origen */}
+      {/* País de origen */}
       {showPaisOrigen && (
         <div>
           <label htmlFor="idPaisOrigen" className="text-sm font-bold uppercase">
             País de Origen
           </label>
-          <input
+          <select
             id="idPaisOrigen"
-            type="number"
             className="w-full p-2 border border-gray-300 rounded"
             {...register("idPaisOrigen", {
               required: "El país de origen es requerido",
             })}
-          />
+            defaultValue=""
+          >
+            <option value="" disabled>
+              {loadingPaises ? "Cargando..." : "Seleccione un país"}
+            </option>
+            {paises?.map((p) => (
+              <option key={p.idPais} value={p.idPais}>
+                {p.nombre}
+              </option>
+            ))}
+          </select>
           {errors.idPaisOrigen && (
             <ErrorMessage>{errors.idPaisOrigen.message}</ErrorMessage>
           )}
         </div>
       )}
 
-      {/* Cantidad Inicial y Final */}
+      {/* Cantidad inicial y final */}
       {showCantidadInicialFinal && (
         <>
           <div>
@@ -252,7 +315,6 @@ export default function AdquisicionForm({
         </>
       )}
 
-      {/* Compra mercado spot */}
       {showCompraSpot && (
         <div>
           <label
@@ -270,7 +332,6 @@ export default function AdquisicionForm({
         </div>
       )}
 
-      {/* Empresa Origen */}
       {showEmpresaOrigen && (
         <div>
           <label
@@ -288,7 +349,6 @@ export default function AdquisicionForm({
         </div>
       )}
 
-      {/* Poder Calorífico */}
       {showPoderCalorifico && (
         <div>
           <label
@@ -311,7 +371,6 @@ export default function AdquisicionForm({
         </div>
       )}
 
-      {/* Porcentaje Humedad */}
       {showPorcentajeHumedad && (
         <div>
           <label

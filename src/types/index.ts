@@ -51,21 +51,41 @@ const transaccionSchema = z.object({
   nombreTransaccion: z.string(),
 });
 
+
+/*Grupo Energetico*/
+
 const grupoEnergeticoSchema = z.object({
   idGrupoEnergetico: z.number(),
   nombreGrupoEnergetico: z.string(),
 });
 
+/*-------Fin--------*/
+
+/*Energetico*/
+
 const energeticoSchema = z.object({
   idEnergetico: z.number(),
   nombreEnergetico: z.string(),
+  grupoEnergetico: grupoEnergeticoSchema,
 });
+
+
+/*-------Fin--------*/
+
+
+
+/*Unidad*/
 
 const unidadSchema = z.object({
   idUnidad: z.number(),
   nombreUnidad: z.string(),
+  energetico: energeticoSchema,
 });
 
+/*-------Fin--------*/
+
+
+/*Pais*/
 const paisOrigenSchema = z
   .object({
     idPais: z.number(),
@@ -73,11 +93,14 @@ const paisOrigenSchema = z
   })
   .nullable();
 
+/*-------Fin--------*/
+
+
 // Schema principal para Adquisición
 export const adquisicionSchemaLista = z.object({
   idAdquisicion: z.number(),
-  compraMercadoSpot: z.boolean(),
-  Cantidad: z.number(),
+  compraMercadoSpot: z.boolean().nullable(),
+  Cantidad: z.number().nullable(),
   cantidadInicial: z.number().nullable(),
   cantidadFinal: z.number().nullable(),
   empresaOrigen: z.string().nullable(),
@@ -88,7 +111,7 @@ export const adquisicionSchemaLista = z.object({
   grupoEnergetico: grupoEnergeticoSchema,
   energetico: energeticoSchema,
   unidad: unidadSchema,
-  paisOrigen: paisOrigenSchema,
+  paisOrigen: paisOrigenSchema.nullable(),
 });
 // Tipos TypeScript inferidos
 export type MesProcesoLista = z.infer<typeof mesProcesoSchemaLista>;
@@ -101,6 +124,299 @@ export type AdquisicionLista = z.infer<typeof adquisicionSchemaLista>;
 export type AdquisicionesLista = AdquisicionLista[];
 
 /*-------------------*/
+
+
+
+/*Exportacion*/
+
+// Esquemas para las entidades relacionadas
+const MesProcesoSchema = z.object({
+  idMesProceso: z.string().uuid(),
+  estado: z.boolean()
+});
+
+const EnergeticoSchema = z.object({
+  idEnergetico: z.number(),
+  nombreEnergetico: z.string()
+});
+
+const UnidadSchema = z.object({
+  idUnidad: z.number(),
+  nombreUnidad: z.string()
+});
+
+const PaisSchema = z.object({
+  idPais: z.number(),
+  nombre: z.string()
+});
+
+// Esquema para la respuesta GET
+export const ExportacionGetSchema = z.object({
+  idExportacion: z.number(),
+  empresaDestino: z.string(),
+  cantidad: z.number(),
+  mesProceso: MesProcesoSchema,
+  energetico: EnergeticoSchema,
+  unidad: UnidadSchema,
+  pais: PaisSchema
+});
+
+// Esquema para el request POST
+export const ExportacionPostSchema = z.object({
+  idEnergetico: z.number(),
+  idPais: z.number(),
+  empresaDestino: z.string(),
+  cantidad: z.number(),
+  idUnidad: z.number(),
+  idMesProceso: z.string().uuid()
+});
+
+// Tipos TypeScript derivados de los esquemas Zod
+export type ExportacionGet = z.infer<typeof ExportacionGetSchema>;
+export type ExportacionPost = z.infer<typeof ExportacionPostSchema>;
+export type ExpMesProceso = z.infer<typeof MesProcesoSchema>;
+export type ExpEnergetico = z.infer<typeof EnergeticoSchema>;
+export type ExpUnidad = z.infer<typeof UnidadSchema>;
+export type Pais = z.infer<typeof PaisSchema>;
+export type ExportacionLista = ExportacionGet[];
+
+
+
+
+/*-------Fin--------*/
+
+
+/*Generacion*/
+
+//Esquema para la respuesta POST
+export const GeneracionPostSchema = z.object({
+  idMesProceso: z.string().uuid(),
+  idTecnologia: z.number(),
+  idUnidad_CGB: z.number(),
+  idUnidad_Ci: z.number(),
+  cantidadGeneradaBruta: z.number(),
+  capacidadInstalada: z.number(),
+  idUnidad_Cena: z.number().nullable(),
+  idUnidad_Ce: z.number().nullable(),
+  idEnergetico: z.number().nullable(),
+  consumoEnergetico: z.number().nullable(),
+  cantidadEnergiaNoAprovechada: z.number().nullable(),
+  Observaciones: z.string().nullable(),
+  Tipo: z.string().nullable(),
+});
+
+
+const unidadCGB = z.object({
+  idUnidad: z.number(),
+  nombreUnidad: z.string(),
+});
+const unidadCI = z.object({
+  idUnidad: z.number(),
+  nombreUnidad: z.string(),
+});
+const unidadCENA = z.object({
+  idUnidad: z.number(),
+  nombreUnidad: z.string(),
+});
+const unidadCE = z.object({
+  idUnidad: z.number(),
+  nombreUnidad: z.string(),
+});
+
+//Esquema para la respuesta GET
+export const GeneracionGetSchema = z.object({
+  idGeneracion: z.number(),
+  idTecnologia: z.number(),
+  unidadCGB: unidadCGB,
+  unidadCI:unidadCI,
+  cantidadGeneradaBruta: z.number(),
+  capacidadInstalada: z.number(),
+  unidadCENA: unidadCENA.nullable(),
+  unidadCE: unidadCE.nullable(),
+  unergetico: EnergeticoSchema.nullable(),
+  consumoEnergetico: z.number().nullable(),
+  cantidadEnergiaNoAprovechada: z.number().nullable(),
+  Observaciones: z.string().nullable(),
+  Tipo: z.string().nullable(),
+  mesProceso: MesProcesoSchema,
+});
+export type GeneracionGet = z.infer<typeof GeneracionGetSchema>;
+export type GeneracionPost = z.infer<typeof GeneracionPostSchema>;
+export type GeneracionLista = GeneracionGet[];
+
+
+
+/*-------Fin--------*/
+
+
+
+
+
+/*Transfomracion */
+
+const energeticoProducidoSchema = z.object({
+  idEnergetico: z.number(),
+  nombreEnergetico: z.string(),
+});
+
+//Esquema para la respuesta POST
+export const TransformacionPostSchema = z.object({
+  idEnergetico: z.number(),
+  cantidad: z.number(),
+  idUnidad: z.number(),
+  idEnergeticoProducido: z.number(),
+  idMesProceso: z.string().uuid(),
+});
+
+//Esquema para la respuesta GET
+export const TransformacionGetSchema = z.object({
+  idTransformacion: z.number(),
+  cantidad: z.number(),
+  unidad: unidadSchema,
+  energetico: EnergeticoSchema,
+  energeticoProducido: energeticoProducidoSchema,
+  mesProceso: MesProcesoSchema,
+});
+
+export type TransformacionGet = z.infer<typeof TransformacionGetSchema>;
+export type TransformacionPost = z.infer<typeof TransformacionPostSchema>;
+export type TransformacionLista = TransformacionGet[];
+
+/*-------Fin--------*/
+
+/*Usos Finales */
+
+//Esquema para la respuesta POST
+export const UsoFinalPostSchema = z.object({
+  idEnergetico: z.number(),
+  idCategoriaUF: z.number(),
+  idTipoUF: z.number().nullable(),
+  idUnidad: z.number(),
+  cantidad: z.number(),
+  tipo: z.string().nullable(),
+  detalle: z.string().nullable(),
+  idMesProceso: z.string().uuid(),
+});
+
+const categoriaUF = z.object({
+  idCategoriaUF: z.number(),
+  nombreCategoria: z.string(),
+});
+const tipoUF = z.object({
+  idTipoUF: z.number(),
+  nombreTipoUF: z.string(),
+});
+
+//Esquema para la respuesta GET
+export const UsoFinalGetSchema = z.object({
+  idUsoFinal: z.number(),
+  cantidad: z.number(),
+  tipo: z.string().nullable(),
+  detalle: z.string().nullable(),
+
+  energetico: EnergeticoSchema,
+  categoriaUF: categoriaUF,
+  tipoUF: tipoUF.nullable(),
+  unidad: unidadSchema,
+  mesProceso: MesProcesoSchema,
+});
+export type UsoFinalGet = z.infer<typeof UsoFinalGetSchema>;
+export type UsoFinalPost = z.infer<typeof UsoFinalPostSchema>;
+export type UsoFinalLista = UsoFinalGet[];
+
+
+
+
+/*-------Fin--------*/
+
+/*Venta Electricidad */
+
+//Esquema para la respuesta POST
+
+export const VentaElectricidadPostSchema = z.object({
+  idDestinoVenta: z.number(),
+  ventaMercadoSpot: z.boolean().nullable(),
+  empresaDestino: z.string(),
+  idRegion: z.number().nullable(),
+  idSectorEconomico: z.number().nullable(),
+  idSubSectorEconomico: z.number().nullable(),
+  cantidadVendida: z.number(),
+  idUnidad: z.number(),
+  idMesProceso: z.string().uuid(),
+
+});
+
+export const VentaElectricidadGetSchema = z.object({
+  idVentaElectricidad: z.number(),
+  idDestinoVenta: z.number(),
+  ventaMercadoSpot: z.boolean().nullable(),
+  cantidadVendida: z.string(),
+  empresaDestino: z.string(),
+  region: z.string().nullable(),
+  sectorE: z.number().nullable(),
+  subSectorE: z.number().nullable(),
+  unidad: unidadSchema,
+  mesProceso: MesProcesoSchema,
+});
+
+export type VentaElectricidadGet = z.infer<typeof VentaElectricidadGetSchema>;
+export type VentaElectricidadPost = z.infer<typeof VentaElectricidadPostSchema>;
+export type VentaElectricidadLista = VentaElectricidadGet[];
+  
+
+
+
+/*-------Fin--------*/
+
+
+
+/*Venta energeticos */
+
+//Esquema para la respuesta POST
+export const VentaEnergeticosPostSchema = z.object({
+  idEnergetico: z.number(),
+  idRegion: z.number(),
+  idSector: z.number(),
+  idSubSector: z.number(),
+  idUnidad: z.number(),
+  cantidad: z.number(),
+  idMesProceso: z.string().uuid(),
+});
+
+
+const region = z.object({
+  idRegion: z.number(),
+  nombre: z.string(),
+});
+const sector = z.object({
+  idSector: z.number(),
+  nombreSector: z.string(),
+});
+const subSector = z.object({
+  idSubSector: z.number(),
+  nombreSubSector: z.string(),
+});
+
+export const VentaEnergeticosGetSchema = z.object({
+  idVentaEnergetico: z.number(),
+  
+  energetico: EnergeticoSchema,
+  region: region.nullable(),
+  sector: sector.nullable(),
+  subSector: subSector.nullable(),
+  unidad: unidadSchema,
+  cantidad: z.number(),
+  mesProceso: MesProcesoSchema,
+  
+});
+
+export type VentaEnergeticosGet = z.infer<typeof VentaEnergeticosGetSchema>;
+export type VentaEnergeticosPost = z.infer<typeof VentaEnergeticosPostSchema>;
+export type VentaEnergeticosLista = VentaEnergeticosGet[];
+
+
+
+/*-------Fin--------*/
 
 /*Plantas */
 

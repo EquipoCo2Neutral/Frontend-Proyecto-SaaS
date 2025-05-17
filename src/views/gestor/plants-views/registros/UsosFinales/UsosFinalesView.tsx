@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { PlusIcon, QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
-import AddAcquisitionModal from "./AddAcquisitionModal";
+import AddAcquisitionModal from "../Adquisiciones/AddAcquisitionModal";
 import { useLocation, useNavigate } from "react-router-dom";
-import { AdquisicionesLista } from "@/types/index";
-import { useAdquisicionesPorMes } from "@/hooks/useAdquisiciones";
+import { UsoFinalLista } from "@/types";
+import { useUsoFinalPorMes } from "@/hooks/useUsoFinal";
+import { PlusIcon, QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
 
 
-export default function AdquisicionesView() {
+export default function UsosFinalesView() {
   const [search, setSearch] = useState("");
   
   const navigate = useNavigate();
@@ -16,12 +16,12 @@ export default function AdquisicionesView() {
 
 
 
-  const adq: AdquisicionesLista = useAdquisicionesPorMes(mesId) || [];
-  const adquisicionesFiltradas = adq.filter((adq) => {
+  const adq: UsoFinalLista = useUsoFinalPorMes(mesId) || [];
+  const usoFinalFiltradas = adq.filter((adq) => {
     const searchLower = search.toLowerCase();
     return (
-      adq?.transaccion?.nombreTransaccion?.toLowerCase().includes(searchLower) ||
-      adq?.energetico?.nombreEnergetico?.toLowerCase().includes(searchLower)
+      adq?.energetico.nombreEnergetico.toLowerCase().includes(searchLower) ||
+      adq?.categoriaUF.nombreCategoria.toLowerCase().includes(searchLower)
      
     );
   });
@@ -30,7 +30,7 @@ export default function AdquisicionesView() {
     <div className="min-h-screen bg-sky-200 py-8 px-4">
       <div className="max-w-5xl mx-auto bg-white p-6 shadow-md rounded-xl w-full">
         <div className="text-center mb-4 relative">
-          <h2 className="text-2xl font-semibold">Adquisiciones</h2>
+          <h2 className="text-2xl font-semibold">Usos Finales</h2>
           <QuestionMarkCircleIcon className="absolute right-4 top-1 h-5 w-5 text-yellow-500 cursor-pointer" />
         </div>
 
@@ -59,18 +59,19 @@ export default function AdquisicionesView() {
               <thead className="bg-gray-200 text-gray-700">
                 <tr>
                   <th className="px-4 py-2">N°</th>
-                  <th className="px-4 py-2">Tipo</th>
                   <th className="px-4 py-2">Energético</th>
+                  <th className="px-4 py-2">Categoria uso final</th>
+                  <th className="px-4 py-2">Tipo uso final</th>
                   <th className="px-4 py-2">Cantidad</th>
                   <th className="px-4 py-2">Unidad</th>
-                  <th className="px-4 py-2">Acción</th>
+                  <th className="px-4 py-2">Accion</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {adquisicionesFiltradas.length > 0 ? (
-                  adquisicionesFiltradas.map((adquisicion, index) => (
+                {usoFinalFiltradas.length > 0 ? (
+                  usoFinalFiltradas.map((usoFinal, index) => (
                     <tr 
-                      key={adquisicion?.idAdquisicion} 
+                      key={usoFinal?.idUsoFinal} 
                       className="hover:bg-gray-50 transition-colors"
                     >
                       
@@ -79,27 +80,30 @@ export default function AdquisicionesView() {
                       </td>
 
                       <td className="px-4 py-3">
-                        {adquisicion?.transaccion?.nombreTransaccion || "N/A"}
+                        {usoFinal?.energetico?.nombreEnergetico || "N/A"}
                       </td>
                       <td className="px-4 py-3">
-                        {adquisicion?.energetico?.nombreEnergetico || "N/A"}
+                        {usoFinal?.categoriaUF.nombreCategoria || "N/A"}
                       </td>
                       <td className="px-4 py-3">
-                        {adquisicion?.Cantidad?.toLocaleString()}
+                        {usoFinal?.tipoUF?.nombreTipoUF.split("(")[0].trim() || "N/A"}
                       </td>
                       <td className="px-4 py-3">
-                        {adquisicion?.unidad?.nombreUnidad?.split("(")[0].trim() || "N/A"}
+                        {usoFinal?.cantidad?.toLocaleString()}
+                      </td>
+                      <td className="px-4 py-3">
+                        {usoFinal?.unidad?.nombreUnidad?.split("(")[0].trim() || "N/A"}
                       </td>
                       <td className="px-4 py-3 space-x-2 whitespace-nowrap">
                         <button 
                           className="text-blue-500 hover:text-blue-700 hover:underline"
-                          onClick={() => navigate(`/adquisiciones/editar/${adquisicion?.idAdquisicion}`)}
+                          onClick={() => navigate(`/adquisiciones/editar/${usoFinal?.idUsoFinal}`)}
                         >
                           Editar
                         </button>
                         <button 
                           className="text-red-500 hover:text-red-700 hover:underline"
-                          onClick={() => console.log('Eliminar', adquisicion?.idAdquisicion)}
+                          onClick={() => console.log('Eliminar', usoFinal?.idUsoFinal)}
                         >
                           Eliminar
                         </button>
@@ -126,4 +130,5 @@ export default function AdquisicionesView() {
       <AddAcquisitionModal />
     </div>
   );
+
 }

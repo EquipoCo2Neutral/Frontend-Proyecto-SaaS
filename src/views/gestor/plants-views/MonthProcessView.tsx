@@ -1,12 +1,12 @@
 import { useState } from "react";
 import AdquisicionesView from "./registros/Adquisiciones/AdquisicionesView";
-import ExportacionView from "./registros/ExportacionView";
-import GeneracionView from "./registros/GeneracionView";
+import ExportacionView from "./registros/Exportaciones/ExportacionView";
+import GeneracionView from "./registros/Generacion/GeneracionView";
 import ResumenTransaccionesView from "./registros/ResumenTransaccionesView";
-import TransformacionEnergeticosView from "./registros/TransformacionEnergeticosView";
-import UsosFinalesView from "./registros/UsosFinalesView";
-import VentaElectricidadView from "./registros/VentaElectricidadView";
-import VentaEnergeticosView from "./registros/VentaEnergeticosView";
+import TransformacionEnergeticosView from "./registros/Transformaciones/TransformacionEnergeticosView";
+import UsosFinalesView from "./registros/UsosFinales/UsosFinalesView";
+import VentaElectricidadView from "./registros/VentaElectricidad/VentaElectricidadView";
+import VentaEnergeticosView from "./registros/VentaEnergeticos/VentaEnergeticosView";
 
 const MonthProcessView = () => {
   const [selectedProcess, setSelectedProcess] = useState<string>("");

@@ -71,13 +71,13 @@ export default function GeneracionView() {
                       <td className="px-4 py-3">{index + 1}</td>
 
                       <td className="px-4 py-3">
-                        {generacion?.idTecnologia === 0
+                        {generacion?.idTecnologia === 1
                           ? "Solar"
-                          : generacion?.idTecnologia === 1
-                          ? "Eólica"
                           : generacion?.idTecnologia === 2
-                          ? "Hidrica"
+                          ? "Eólica"
                           : generacion?.idTecnologia === 3
+                          ? "Hidrica"
+                          : generacion?.idTecnologia === 4
                           ? "Geotermica"
                           : "N/A"}
                       </td>

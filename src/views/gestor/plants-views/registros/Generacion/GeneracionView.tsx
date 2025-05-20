@@ -1,28 +1,24 @@
 import { useState } from "react";
-import AddAcquisitionModal from "../Adquisiciones/AddAcquisitionModal";
+
 import { useLocation, useNavigate } from "react-router-dom";
 import { GeneracionLista } from "@/types";
 import { useGeneracionPorMes } from "@/hooks/useGeneraciones";
 import { PlusIcon, QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
+import AddGenerationModal from "./AddGenerationModal";
 
 export default function GeneracionView() {
-    const [search, setSearch] = useState("");
-  
+  const [search, setSearch] = useState("");
+
   const navigate = useNavigate();
   const location = useLocation();
   const pathParts = location.pathname.split("/");
-  const mesId = pathParts[pathParts.length - 1]; 
-
-
+  const mesId = pathParts[pathParts.length - 1];
 
   const adq: GeneracionLista = useGeneracionPorMes(mesId) || [];
   console.log(adq);
   const generacionFiltradas = adq.filter((adq) => {
     const searchLower = search.toLowerCase();
-    return (
-      adq?.unidadCI.nombreUnidad.toLowerCase().includes(searchLower)
-     
-    );
+    return adq?.unidadCI.nombreUnidad.toLowerCase().includes(searchLower);
   });
 
   return (
@@ -46,7 +42,7 @@ export default function GeneracionView() {
             <button
               className="h-10 w-10 flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
               onClick={() =>
-                navigate(location.pathname + "?newAcquisition=true")
+                navigate(location.pathname + "?newGeneration=true")
               }
             >
               <PlusIcon className="h-5 w-5 text-gray-700" />
@@ -68,17 +64,22 @@ export default function GeneracionView() {
               <tbody className="divide-y divide-gray-200">
                 {generacionFiltradas.length > 0 ? (
                   generacionFiltradas.map((generacion, index) => (
-                    <tr 
-                      key={generacion?.idGeneracion} 
+                    <tr
+                      key={generacion?.idGeneracion}
                       className="hover:bg-gray-50 transition-colors"
                     >
-                      
-                      <td className="px-4 py-3">
-                        {index + 1}
-                      </td>
+                      <td className="px-4 py-3">{index + 1}</td>
 
                       <td className="px-4 py-3">
-                        {generacion?.idTecnologia === 0 ? "Solar" : generacion?.idTecnologia === 1 ? "Eólica": generacion?.idTecnologia === 2 ? "Hidrica" : generacion?.idTecnologia === 3 ? "Geotermica"  : "N/A"}
+                        {generacion?.idTecnologia === 0
+                          ? "Solar"
+                          : generacion?.idTecnologia === 1
+                          ? "Eólica"
+                          : generacion?.idTecnologia === 2
+                          ? "Hidrica"
+                          : generacion?.idTecnologia === 3
+                          ? "Geotermica"
+                          : "N/A"}
                       </td>
                       <td className="px-4 py-3">
                         {"Generacion Energia Renovable"}
@@ -87,18 +88,26 @@ export default function GeneracionView() {
                         {generacion?.capacidadInstalada?.toLocaleString()}
                       </td>
                       <td className="px-4 py-3">
-                        {generacion?.unidadCI?.nombreUnidad?.split("(")[0].trim() || "N/A"}
+                        {generacion?.unidadCI?.nombreUnidad
+                          ?.split("(")[0]
+                          .trim() || "N/A"}
                       </td>
                       <td className="px-4 py-3 space-x-2 whitespace-nowrap">
-                        <button 
+                        <button
                           className="text-blue-500 hover:text-blue-700 hover:underline"
-                          onClick={() => navigate(`/adquisiciones/editar/${generacion?.idGeneracion}`)}
+                          onClick={() =>
+                            navigate(
+                              `/adquisiciones/editar/${generacion?.idGeneracion}`
+                            )
+                          }
                         >
                           Editar
                         </button>
-                        <button 
+                        <button
                           className="text-red-500 hover:text-red-700 hover:underline"
-                          onClick={() => console.log('Eliminar', generacion?.idGeneracion)}
+                          onClick={() =>
+                            console.log("Eliminar", generacion?.idGeneracion)
+                          }
                         >
                           Eliminar
                         </button>
@@ -107,12 +116,12 @@ export default function GeneracionView() {
                   ))
                 ) : (
                   <tr>
-                    <td 
-                      className="px-4 py-6 text-center text-gray-400" 
+                    <td
+                      className="px-4 py-6 text-center text-gray-400"
                       colSpan={7}
                     >
-                      {search 
-                        ? "No se encontraron Generaciones que coincidan con la búsqueda" 
+                      {search
+                        ? "No se encontraron Generaciones que coincidan con la búsqueda"
                         : "No hay Generaciones  registradas para este período."}
                     </td>
                   </tr>
@@ -122,8 +131,7 @@ export default function GeneracionView() {
           </div>
         </div>
       </div>
-      <AddAcquisitionModal />
+      <AddGenerationModal />
     </div>
   );
-
 }

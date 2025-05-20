@@ -20,3 +20,15 @@ export const useUnidadesByEnergetico = (idEnergetico: number) => {
     enabled: !!idEnergetico, // solo corre si hay ID
   });
 };
+
+export const useUnidadesByIds = (ids: number[]) => {
+  return useQuery<Unidad[]>({
+    queryKey: ["unidadesByIds", ids],
+    queryFn: async () => {
+      const queryString = ids.join(",");
+      const { data } = await api.get(`/unidades/by-ids?ids=${queryString}`);
+      return data;
+    },
+    enabled: ids.length > 0,
+  });
+};

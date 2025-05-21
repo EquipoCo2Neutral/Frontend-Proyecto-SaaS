@@ -1,13 +1,9 @@
 import { AdquisicionFormData } from "@/types/index";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import {
-  QueryClient,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import ProcessForm from "@/components/process/ProcessForm";
+
 import { createAcquisition } from "@/api/Registros/AdquisicionesAPI";
 import AdquisicionForm from "@/components/register/acquisition/acquisitionForm";
 
@@ -82,10 +78,10 @@ const CreateAcquisitionView = () => {
           ? Number(formData.poderCalorifico)
           : null,
     };
+
+    //mutacion para registrar adquisicion
     mutate(formattedData);
   };
-
-  //mutacion para registrar adquisicion
 
   return (
     <>
@@ -105,8 +101,8 @@ const CreateAcquisitionView = () => {
 
           <input
             type="submit"
-            value="Registrar Adquisicion"
-            className="bg-purple-600 hover:bg-purple-800 w-full text-white uppercase font-bold cursor-pointer transition-colors"
+            value="Registrar Adquisición"
+            className="mt-8 w-full bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white font-semibold text-sm uppercase rounded-2xl px-4 py-3 shadow-md cursor-pointer transition-all duration-300"
           />
         </form>
       </div>

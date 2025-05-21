@@ -1,20 +1,18 @@
 import { useState } from "react";
-import AddAcquisitionModal from "../Adquisiciones/AddAcquisitionModal";
+
 import { useLocation, useNavigate } from "react-router-dom";
 import { UsoFinalLista } from "@/types";
 import { useUsoFinalPorMes } from "@/hooks/useUsoFinal";
 import { PlusIcon, QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
-
+import AddUFModal from "./AddUFModal";
 
 export default function UsosFinalesView() {
   const [search, setSearch] = useState("");
-  
+
   const navigate = useNavigate();
   const location = useLocation();
   const pathParts = location.pathname.split("/");
-  const mesId = pathParts[pathParts.length - 1]; 
-
-
+  const mesId = pathParts[pathParts.length - 1];
 
   const adq: UsoFinalLista = useUsoFinalPorMes(mesId) || [];
   const usoFinalFiltradas = adq.filter((adq) => {
@@ -22,7 +20,6 @@ export default function UsosFinalesView() {
     return (
       adq?.energetico.nombreEnergetico.toLowerCase().includes(searchLower) ||
       adq?.categoriaUF.nombreCategoria.toLowerCase().includes(searchLower)
-     
     );
   });
 
@@ -46,9 +43,7 @@ export default function UsosFinalesView() {
 
             <button
               className="h-10 w-10 flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
-              onClick={() =>
-                navigate(location.pathname + "?newAcquisition=true")
-              }
+              onClick={() => navigate(location.pathname + "?newUF=true")}
             >
               <PlusIcon className="h-5 w-5 text-gray-700" />
             </button>
@@ -70,14 +65,11 @@ export default function UsosFinalesView() {
               <tbody className="divide-y divide-gray-200">
                 {usoFinalFiltradas.length > 0 ? (
                   usoFinalFiltradas.map((usoFinal, index) => (
-                    <tr 
-                      key={usoFinal?.idUsoFinal} 
+                    <tr
+                      key={usoFinal?.idUsoFinal}
                       className="hover:bg-gray-50 transition-colors"
                     >
-                      
-                      <td className="px-4 py-3">
-                        {index + 1}
-                      </td>
+                      <td className="px-4 py-3">{index + 1}</td>
 
                       <td className="px-4 py-3">
                         {usoFinal?.energetico?.nombreEnergetico || "N/A"}
@@ -86,24 +78,32 @@ export default function UsosFinalesView() {
                         {usoFinal?.categoriaUF.nombreCategoria || "N/A"}
                       </td>
                       <td className="px-4 py-3">
-                        {usoFinal?.tipoUF?.nombreTipoUF.split("(")[0].trim() || "N/A"}
+                        {usoFinal?.tipoUF?.nombreTipoUF.split("(")[0].trim() ||
+                          "N/A"}
                       </td>
                       <td className="px-4 py-3">
                         {usoFinal?.cantidad?.toLocaleString()}
                       </td>
                       <td className="px-4 py-3">
-                        {usoFinal?.unidad?.nombreUnidad?.split("(")[0].trim() || "N/A"}
+                        {usoFinal?.unidad?.nombreUnidad?.split("(")[0].trim() ||
+                          "N/A"}
                       </td>
                       <td className="px-4 py-3 space-x-2 whitespace-nowrap">
-                        <button 
+                        <button
                           className="text-blue-500 hover:text-blue-700 hover:underline"
-                          onClick={() => navigate(`/adquisiciones/editar/${usoFinal?.idUsoFinal}`)}
+                          onClick={() =>
+                            navigate(
+                              `/adquisiciones/editar/${usoFinal?.idUsoFinal}`
+                            )
+                          }
                         >
                           Editar
                         </button>
-                        <button 
+                        <button
                           className="text-red-500 hover:text-red-700 hover:underline"
-                          onClick={() => console.log('Eliminar', usoFinal?.idUsoFinal)}
+                          onClick={() =>
+                            console.log("Eliminar", usoFinal?.idUsoFinal)
+                          }
                         >
                           Eliminar
                         </button>
@@ -112,12 +112,12 @@ export default function UsosFinalesView() {
                   ))
                 ) : (
                   <tr>
-                    <td 
-                      className="px-4 py-6 text-center text-gray-400" 
+                    <td
+                      className="px-4 py-6 text-center text-gray-400"
                       colSpan={7}
                     >
-                      {search 
-                        ? "No se encontraron adquisiciones que coincidan con la búsqueda" 
+                      {search
+                        ? "No se encontraron adquisiciones que coincidan con la búsqueda"
                         : "No hay adquisiciones registradas para este período."}
                     </td>
                   </tr>
@@ -127,8 +127,7 @@ export default function UsosFinalesView() {
           </div>
         </div>
       </div>
-      <AddAcquisitionModal />
+      <AddUFModal />
     </div>
   );
-
 }

@@ -97,8 +97,8 @@ const CreateGeneracionView = () => {
 
           <input
             type="submit"
-            value="Registrar Adquisicion"
-            className="bg-purple-600 hover:bg-purple-800 w-full text-white uppercase font-bold cursor-pointer transition-colors"
+            value="Registrar Generación"
+            className="mt-8 w-full bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white font-semibold text-sm uppercase rounded-2xl px-4 py-3 shadow-md cursor-pointer transition-all duration-300"
           />
         </form>
       </div>

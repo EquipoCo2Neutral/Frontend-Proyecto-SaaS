@@ -287,15 +287,28 @@ export type TransformacionLista = TransformacionGet[];
 
 //Esquema para la respuesta POST
 export const UsoFinalPostSchema = z.object({
-  idEnergetico: z.number(),
-  idCategoriaUF: z.number(),
+  idEnergetico: z.number().or(z.string()),
+  idCategoriaUF: z.string().or(z.number()),
   idTipoUF: z.number().nullable(),
-  idUnidad: z.number(),
+  idUnidad: z.string().or(z.number()),
   cantidad: z.number(),
   tipo: z.string().nullable(),
   detalle: z.string().nullable(),
   idMesProceso: z.string().uuid(),
 });
+
+export type UsosFinales = z.infer<typeof UsoFinalPostSchema>;
+export type UFFormData = Pick<
+  UsosFinales,
+  | "idMesProceso"
+  | "idEnergetico"
+  | "idCategoriaUF"
+  | "idTipoUF"
+  | "idUnidad"
+  | "cantidad"
+  | "tipo"
+  | "detalle"
+>;
 
 const categoriaUF = z.object({
   idCategoriaUF: z.number(),

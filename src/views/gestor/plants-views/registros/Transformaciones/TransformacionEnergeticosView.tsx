@@ -78,16 +78,16 @@ export default function TransformacionEnergeticosView() {
                         {transformacion?.energetico?.nombreEnergetico || "N/A"}
                       </td>
                       <td className="px-4 py-3">
-                        {transformacion?.energeticoProducido.nombreEnergetico ||
-                          "N/A"}
-                      </td>
-                      <td className="px-4 py-3">
                         {transformacion?.cantidad?.toLocaleString()}
                       </td>
                       <td className="px-4 py-3">
                         {transformacion?.unidad?.nombreUnidad
                           ?.split("(")[0]
                           .trim() || "N/A"}
+                      </td>
+                      <td className="px-4 py-3">
+                        {transformacion?.energeticoProducido.nombreEnergetico ||
+                          "N/A"}
                       </td>
                       <td className="px-4 py-3 space-x-2 whitespace-nowrap">
                         <button

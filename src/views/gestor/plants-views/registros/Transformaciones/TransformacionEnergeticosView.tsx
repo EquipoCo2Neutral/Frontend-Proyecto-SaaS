@@ -59,9 +59,9 @@ export default function TransformacionEnergeticosView() {
                 <tr>
                   <th className="px-4 py-2">N°</th>
                   <th className="px-4 py-2">Energético Utilizado</th>
-                  <th className="px-4 py-2">Energético Producido</th>
                   <th className="px-4 py-2">Cantidad</th>
                   <th className="px-4 py-2">Unidad</th>
+                  <th className="px-4 py-2">Energético Producido</th>
                   <th className="px-4 py-2">Accion</th>
                 </tr>
               </thead>

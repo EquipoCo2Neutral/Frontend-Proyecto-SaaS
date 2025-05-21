@@ -29,3 +29,18 @@ export const useEnergeticosPorMesProceso = (idMesProceso: string) => {
     enabled: !!idMesProceso,
   });
 };
+
+export const useEnergeticosPorMesProcesoYProduccionBruta = (
+  idMesProceso: string
+) => {
+  return useQuery<Energetico[], Error>({
+    queryKey: ["energeticos-produccion-bruta", idMesProceso],
+    queryFn: async () => {
+      const { data } = await api<Energetico[]>(
+        `/adquisiciones/energeticos-mes-proceso-transaccion/${idMesProceso}`
+      );
+      return data;
+    },
+    enabled: !!idMesProceso,
+  });
+};

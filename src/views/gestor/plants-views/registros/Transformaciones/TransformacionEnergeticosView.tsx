@@ -4,25 +4,24 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { TransformacionLista } from "@/types";
 import { useTransformacionPorMes } from "@/hooks/useTransformaciones";
 import { PlusIcon, QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
-
+import AddTransformacionModal from "./AddTransformacionModal";
 
 export default function TransformacionEnergeticosView() {
   const [search, setSearch] = useState("");
-  
+
   const navigate = useNavigate();
   const location = useLocation();
   const pathParts = location.pathname.split("/");
-  const mesId = pathParts[pathParts.length - 1]; 
-
-
+  const mesId = pathParts[pathParts.length - 1];
 
   const adq: TransformacionLista = useTransformacionPorMes(mesId) || [];
   const transformacionFiltradas = adq.filter((adq) => {
     const searchLower = search.toLowerCase();
     return (
       adq?.energetico.nombreEnergetico.toLowerCase().includes(searchLower) ||
-      adq?.energeticoProducido.nombreEnergetico.toLowerCase().includes(searchLower)
-     
+      adq?.energeticoProducido.nombreEnergetico
+        .toLowerCase()
+        .includes(searchLower)
     );
   });
 
@@ -47,7 +46,7 @@ export default function TransformacionEnergeticosView() {
             <button
               className="h-10 w-10 flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
               onClick={() =>
-                navigate(location.pathname + "?newAcquisition=true")
+                navigate(location.pathname + "?newTransformacion=true")
               }
             >
               <PlusIcon className="h-5 w-5 text-gray-700" />
@@ -69,37 +68,46 @@ export default function TransformacionEnergeticosView() {
               <tbody className="divide-y divide-gray-200">
                 {transformacionFiltradas.length > 0 ? (
                   transformacionFiltradas.map((transformacion, index) => (
-                    <tr 
-                      key={transformacion?.idTransformacion} 
+                    <tr
+                      key={transformacion?.idTransformacion}
                       className="hover:bg-gray-50 transition-colors"
                     >
-                      
-                      <td className="px-4 py-3">
-                        {index + 1}
-                      </td>
+                      <td className="px-4 py-3">{index + 1}</td>
 
                       <td className="px-4 py-3">
                         {transformacion?.energetico?.nombreEnergetico || "N/A"}
                       </td>
                       <td className="px-4 py-3">
-                        {transformacion?.energeticoProducido.nombreEnergetico || "N/A"}
+                        {transformacion?.energeticoProducido.nombreEnergetico ||
+                          "N/A"}
                       </td>
                       <td className="px-4 py-3">
                         {transformacion?.cantidad?.toLocaleString()}
                       </td>
                       <td className="px-4 py-3">
-                        {transformacion?.unidad?.nombreUnidad?.split("(")[0].trim() || "N/A"}
+                        {transformacion?.unidad?.nombreUnidad
+                          ?.split("(")[0]
+                          .trim() || "N/A"}
                       </td>
                       <td className="px-4 py-3 space-x-2 whitespace-nowrap">
-                        <button 
+                        <button
                           className="text-blue-500 hover:text-blue-700 hover:underline"
-                          onClick={() => navigate(`/adquisiciones/editar/${transformacion?.idTransformacion}`)}
+                          onClick={() =>
+                            navigate(
+                              `/adquisiciones/editar/${transformacion?.idTransformacion}`
+                            )
+                          }
                         >
                           Editar
                         </button>
-                        <button 
+                        <button
                           className="text-red-500 hover:text-red-700 hover:underline"
-                          onClick={() => console.log('Eliminar', transformacion?.idTransformacion)}
+                          onClick={() =>
+                            console.log(
+                              "Eliminar",
+                              transformacion?.idTransformacion
+                            )
+                          }
                         >
                           Eliminar
                         </button>
@@ -108,12 +116,12 @@ export default function TransformacionEnergeticosView() {
                   ))
                 ) : (
                   <tr>
-                    <td 
-                      className="px-4 py-6 text-center text-gray-400" 
+                    <td
+                      className="px-4 py-6 text-center text-gray-400"
                       colSpan={7}
                     >
-                      {search 
-                        ? "No se encontraron adquisiciones que coincidan con la búsqueda" 
+                      {search
+                        ? "No se encontraron adquisiciones que coincidan con la búsqueda"
                         : "No hay adquisiciones registradas para este período."}
                     </td>
                   </tr>
@@ -123,7 +131,7 @@ export default function TransformacionEnergeticosView() {
           </div>
         </div>
       </div>
-      <AddAcquisitionModal />
+      <AddTransformacionModal />
     </div>
   );
 }

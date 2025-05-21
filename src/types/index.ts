@@ -260,12 +260,22 @@ const energeticoProducidoSchema = z.object({
 
 //Esquema para la respuesta POST
 export const TransformacionPostSchema = z.object({
-  idEnergetico: z.number(),
+  idEnergetico: z.number().or(z.string()),
   cantidad: z.number(),
-  idUnidad: z.number(),
-  idEnergeticoProducido: z.number(),
+  idUnidad: z.number().or(z.string()),
+  idEnergeticoProducido: z.number().or(z.string()),
   idMesProceso: z.string().uuid(),
 });
+
+export type Transformaciones = z.infer<typeof TransformacionPostSchema>;
+export type TransformacionFormData = Pick<
+  Transformaciones,
+  | "idMesProceso"
+  | "idEnergetico"
+  | "cantidad"
+  | "idUnidad"
+  | "idEnergeticoProducido"
+>;
 
 //Esquema para la respuesta GET
 export const TransformacionGetSchema = z.object({

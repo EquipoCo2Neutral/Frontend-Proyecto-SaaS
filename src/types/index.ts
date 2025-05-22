@@ -238,7 +238,7 @@ export const GeneracionGetSchema = z.object({
   capacidadInstalada: z.number(),
   unidadCENA: unidadCENA.nullable(),
   unidadCE: unidadCE.nullable(),
-  unergetico: EnergeticoSchema.nullable(),
+  energetico: EnergeticoSchema.nullable(),
   consumoEnergetico: z.number().nullable(),
   cantidadEnergiaNoAprovechada: z.number().nullable(),
   Observaciones: z.string().nullable(),

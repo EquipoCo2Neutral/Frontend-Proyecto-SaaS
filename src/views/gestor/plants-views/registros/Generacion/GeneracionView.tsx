@@ -56,7 +56,7 @@ export default function GeneracionView() {
                   <th className="px-4 py-2">N°</th>
                   <th className="px-4 py-2">Energético</th>
                   <th className="px-4 py-2">Categoria</th>
-                  <th className="px-4 py-2">Cantidad</th>
+                  <th className="px-4 py-2 ">Cantidad Electricidad</th>
                   <th className="px-4 py-2">Unidad</th>
                   <th className="px-4 py-2">Accion</th>
                 </tr>
@@ -78,17 +78,29 @@ export default function GeneracionView() {
                           : generacion?.idTecnologia === 3
                           ? "Hidrica"
                           : generacion?.idTecnologia === 4
-                          ? "Geotermica"
+                          ? generacion?.energetico?.nombreEnergetico
+                          : generacion?.idTecnologia === 5
+                          ? generacion?.energetico?.nombreEnergetico
                           : "N/A"}
                       </td>
                       <td className="px-4 py-3">
-                        {"Generacion Energia Renovable"}
+                        {generacion?.idTecnologia === 1
+                          ? "Generacion Energia Renovable"
+                          : generacion?.idTecnologia === 2
+                          ? "Generacion Energia Renovable"
+                          : generacion?.idTecnologia === 3
+                          ? "Generacion Energia Renovable"
+                          : generacion?.idTecnologia === 4
+                          ? "Generacion Eléctrica Termica"
+                          : generacion?.idTecnologia === 5
+                          ? "Generacion Eléctrica Termica"
+                          : "N/A"}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3 flex items-center justify-center">
                         {generacion?.capacidadInstalada?.toLocaleString()}
                       </td>
                       <td className="px-4 py-3">
-                        {generacion?.unidadCI?.nombreUnidad
+                        {generacion?.unidadCGB?.nombreUnidad
                           ?.split("(")[0]
                           .trim() || "N/A"}
                       </td>

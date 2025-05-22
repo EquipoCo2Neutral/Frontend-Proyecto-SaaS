@@ -2,7 +2,7 @@ import { useState } from "react";
 import AdquisicionesView from "./registros/Adquisiciones/AdquisicionesView";
 import ExportacionView from "./registros/Exportaciones/ExportacionView";
 import GeneracionView from "./registros/Generacion/GeneracionView";
-import ResumenTransaccionesView from "./registros/ResumenTransaccionesView";
+import ResumenTransaccionesView from "./registros/ResumenTransacciones/ResumenTransaccionesView";
 import TransformacionEnergeticosView from "./registros/Transformaciones/TransformacionEnergeticosView";
 import UsosFinalesView from "./registros/UsosFinales/UsosFinalesView";
 import VentaElectricidadView from "./registros/VentaElectricidad/VentaElectricidadView";

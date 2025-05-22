@@ -441,6 +441,22 @@ export type VentaEnergeticosLista = VentaEnergeticosGet[];
 
 /*-------Fin--------*/
 
+/*Resumen */
+
+export const ResumenTransaccionesGetSchema = z.object({
+  Energetico: z.string(),
+  Categoria: z.string(),
+  Unidad: z.string(),
+  cantidadEntrada: z.number(),
+  cantidadSalida: z.number(),
+  idMesProceso: MesProcesoSchema,
+})
+export type ResumenTransaccionesGet = z.infer<typeof ResumenTransaccionesGetSchema>;
+export type ResumenTransaccionesLista = ResumenTransaccionesGet[]
+
+/*-------Fin--------*/
+
+
 /*Plantas */
 
 const plantasSchema = z.object({

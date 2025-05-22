@@ -4,24 +4,20 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { VentaElectricidadLista } from "@/types";
 import { useVentaElectricidadPorMes } from "@/hooks/useVentaElectricidad";
 import { PlusIcon, QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
+import AddVentaElectricidadModal from "./AddVentaElectricidadModal";
 
 export default function VentaElectricidadView() {
-    const [search, setSearch] = useState("");
-  
+  const [search, setSearch] = useState("");
+
   const navigate = useNavigate();
   const location = useLocation();
   const pathParts = location.pathname.split("/");
-  const mesId = pathParts[pathParts.length - 1]; 
-
-
+  const mesId = pathParts[pathParts.length - 1];
 
   const adq: VentaElectricidadLista = useVentaElectricidadPorMes(mesId) || [];
   const ventaElectricidadFiltradas = adq.filter((adq) => {
     const searchLower = search.toLowerCase();
-    return (
-      adq?.empresaDestino.toLowerCase().includes(searchLower)
-     
-    );
+    return adq?.empresaDestino.toLowerCase().includes(searchLower);
   });
 
   return (
@@ -45,7 +41,7 @@ export default function VentaElectricidadView() {
             <button
               className="h-10 w-10 flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
               onClick={() =>
-                navigate(location.pathname + "?newAcquisition=true")
+                navigate(location.pathname + "?newVentaElectricidad=true")
               }
             >
               <PlusIcon className="h-5 w-5 text-gray-700" />
@@ -67,37 +63,53 @@ export default function VentaElectricidadView() {
               <tbody className="divide-y divide-gray-200">
                 {ventaElectricidadFiltradas.length > 0 ? (
                   ventaElectricidadFiltradas.map((ventaElectricidad, index) => (
-                    <tr 
-                      key={ventaElectricidad?.idVentaElectricidad} 
+                    <tr
+                      key={ventaElectricidad?.idVentaElectricidad}
                       className="hover:bg-gray-50 transition-colors"
                     >
-                      
-                      <td className="px-4 py-3">
-                        {index + 1}
-                      </td>
+                      <td className="px-4 py-3">{index + 1}</td>
 
                       <td className="px-4 py-3">
                         {ventaElectricidad?.empresaDestino || "N/A"}
                       </td>
                       <td className="px-4 py-3">
-                         {ventaElectricidad?.idDestinoVenta === 1 ? "Venta a generación electrica" : ventaElectricidad?.idDestinoVenta === 2 ? "Venta a distribucion electrica": ventaElectricidad?.idDestinoVenta=== 3 ? "Venta regulada" : ventaElectricidad?.idDestinoVenta === 4 ? "Venta no regulada"  : "N/A"}
+                        {ventaElectricidad?.idDestinoVenta === 1
+                          ? "Venta a generación electrica"
+                          : ventaElectricidad?.idDestinoVenta === 2
+                          ? "Venta a distribucion electrica"
+                          : ventaElectricidad?.idDestinoVenta === 3
+                          ? "Venta regulada"
+                          : ventaElectricidad?.idDestinoVenta === 4
+                          ? "Venta no regulada"
+                          : "N/A"}
                       </td>
                       <td className="px-4 py-3">
                         {ventaElectricidad?.cantidadVendida?.toLocaleString()}
                       </td>
                       <td className="px-4 py-3">
-                        {ventaElectricidad?.unidad?.nombreUnidad?.split("(")[0].trim() || "N/A"}
+                        {ventaElectricidad?.unidad?.nombreUnidad
+                          ?.split("(")[0]
+                          .trim() || "N/A"}
                       </td>
                       <td className="px-4 py-3 space-x-2 whitespace-nowrap">
-                        <button 
+                        <button
                           className="text-blue-500 hover:text-blue-700 hover:underline"
-                          onClick={() => navigate(`/adquisiciones/editar/${ventaElectricidad?.idVentaElectricidad}`)}
+                          onClick={() =>
+                            navigate(
+                              `/adquisiciones/editar/${ventaElectricidad?.idVentaElectricidad}`
+                            )
+                          }
                         >
                           Editar
                         </button>
-                        <button 
+                        <button
                           className="text-red-500 hover:text-red-700 hover:underline"
-                          onClick={() => console.log('Eliminar', ventaElectricidad?.idVentaElectricidad)}
+                          onClick={() =>
+                            console.log(
+                              "Eliminar",
+                              ventaElectricidad?.idVentaElectricidad
+                            )
+                          }
                         >
                           Eliminar
                         </button>
@@ -106,12 +118,12 @@ export default function VentaElectricidadView() {
                   ))
                 ) : (
                   <tr>
-                    <td 
-                      className="px-4 py-6 text-center text-gray-400" 
+                    <td
+                      className="px-4 py-6 text-center text-gray-400"
                       colSpan={7}
                     >
-                      {search 
-                        ? "No se encontraron adquisiciones que coincidan con la búsqueda" 
+                      {search
+                        ? "No se encontraron adquisiciones que coincidan con la búsqueda"
                         : "No hay adquisiciones registradas para este período."}
                     </td>
                   </tr>
@@ -121,7 +133,7 @@ export default function VentaElectricidadView() {
           </div>
         </div>
       </div>
-      <AddAcquisitionModal />
+      <AddVentaElectricidadModal />
     </div>
   );
 }

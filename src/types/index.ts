@@ -353,16 +353,30 @@ export type UsoFinalLista = UsoFinalGet[];
 //Esquema para la respuesta POST
 
 export const VentaElectricidadPostSchema = z.object({
-  idDestinoVenta: z.number(),
+  idDestinoVenta: z.number().or(z.string()),
   ventaMercadoSpot: z.boolean().nullable(),
   empresaDestino: z.string(),
   idRegion: z.number().nullable(),
-  idSectorEconomico: z.number().nullable(),
-  idSubSectorEconomico: z.number().nullable(),
+  idSector: z.number().nullable(),
+  idSubSector: z.number().nullable(),
   cantidadVendida: z.number(),
-  idUnidad: z.number(),
+  idUnidad: z.number().or(z.string()),
   idMesProceso: z.string().uuid(),
 });
+
+export type VentaElectricidad = z.infer<typeof VentaElectricidadPostSchema>;
+export type VentaElectricidadFormData = Pick<
+  VentaElectricidad,
+  | "idMesProceso"
+  | "idDestinoVenta"
+  | "ventaMercadoSpot"
+  | "empresaDestino"
+  | "idRegion"
+  | "idSector"
+  | "idSubSector"
+  | "cantidadVendida"
+  | "idUnidad"
+>;
 
 export const VentaElectricidadGetSchema = z.object({
   idVentaElectricidad: z.number(),

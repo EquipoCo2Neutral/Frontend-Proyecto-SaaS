@@ -32,5 +32,6 @@ export const useSubSectores = (idSector: string) => {
       const { data } = await api(`/sub-sector-economico/sector/${idSector}`);
       return data;
     },
+    enabled: !!idSector,
   });
 };

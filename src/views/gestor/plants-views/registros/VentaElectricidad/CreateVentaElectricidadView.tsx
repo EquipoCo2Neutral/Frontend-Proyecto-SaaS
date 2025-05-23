@@ -15,8 +15,8 @@ const CreateVentaElectricidadView = () => {
     ventaMercadoSpot: null,
     empresaDestino: "",
     idRegion: null,
-    idSector: null,
-    idSubSector: null,
+    idSectorEconomico: null,
+    idSubSectorEconomico: null,
     cantidadVendida: 0,
     idUnidad: "",
   };
@@ -50,9 +50,15 @@ const CreateVentaElectricidadView = () => {
       ventaMercadoSpot:
         formData.ventaMercadoSpot !== null ? formData.ventaMercadoSpot : null,
       empresaDestino: formData.empresaDestino,
-      idRegion: formData.idRegion !== null ? formData.idRegion : null,
-      idSector: formData.idSector !== null ? formData.idSector : null,
-      idSubSector: formData.idSubSector !== null ? formData.idSubSector : null,
+      idRegion: formData.idRegion !== null ? Number(formData.idRegion) : null,
+      idSectorEconomico:
+        formData.idSectorEconomico !== null
+          ? Number(formData.idSectorEconomico)
+          : null,
+      idSubSectorEconomico:
+        formData.idSubSectorEconomico !== null
+          ? Number(formData.idSubSectorEconomico)
+          : null,
       cantidadVendida: Number(formData.cantidadVendida),
       idUnidad: Number(formData.idUnidad),
     };

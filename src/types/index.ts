@@ -357,8 +357,8 @@ export const VentaElectricidadPostSchema = z.object({
   ventaMercadoSpot: z.boolean().nullable(),
   empresaDestino: z.string(),
   idRegion: z.number().nullable(),
-  idSector: z.number().nullable(),
-  idSubSector: z.number().nullable(),
+  idSectorEconomico: z.number().nullable(),
+  idSubSectorEconomico: z.number().nullable(),
   cantidadVendida: z.number(),
   idUnidad: z.number().or(z.string()),
   idMesProceso: z.string().uuid(),
@@ -372,8 +372,8 @@ export type VentaElectricidadFormData = Pick<
   | "ventaMercadoSpot"
   | "empresaDestino"
   | "idRegion"
-  | "idSector"
-  | "idSubSector"
+  | "idSectorEconomico"
+  | "idSubSectorEconomico"
   | "cantidadVendida"
   | "idUnidad"
 >;
@@ -450,12 +450,13 @@ export const ResumenTransaccionesGetSchema = z.object({
   cantidadEntrada: z.number(),
   cantidadSalida: z.number(),
   idMesProceso: MesProcesoSchema,
-})
-export type ResumenTransaccionesGet = z.infer<typeof ResumenTransaccionesGetSchema>;
-export type ResumenTransaccionesLista = ResumenTransaccionesGet[]
+});
+export type ResumenTransaccionesGet = z.infer<
+  typeof ResumenTransaccionesGetSchema
+>;
+export type ResumenTransaccionesLista = ResumenTransaccionesGet[];
 
 /*-------Fin--------*/
-
 
 /*Plantas */
 

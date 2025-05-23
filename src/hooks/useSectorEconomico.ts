@@ -25,7 +25,7 @@ export const useSectores = () => {
   });
 };
 
-export const useSubSectores = (idSector: string) => {
+export const useSubSectores = (idSector: number) => {
   return useQuery<SubSectorEconomico[]>({
     queryKey: ["subSectores", idSector],
     queryFn: async () => {
